@@ -6,3 +6,28 @@ header {
   position: fixed;
   background-color: #0683c9;
 }
+
+#circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  display: none;
+	width: 150px;
+  height: 150px;
+}
+
+.loader {
+  width: calc(100% - 0px);
+	height: calc(100% - 0px);
+	border: 8px solid #FFFFFF;
+	border-top: 8px solid #0683C9;
+	border-radius: 50%;
+	animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
