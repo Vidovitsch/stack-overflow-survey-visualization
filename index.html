@@ -2,30 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Import Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Import latest version (v5) of d3.js -->
     <script src='https://d3js.org/d3.v5.min.js'></script>
+
     <link rel="stylesheet" type="text/css" href="index.css">
-    <title>D3</title>
 </head>
 <body>
-  <div class="chart">
-    <div style="width: 40px;">4</div>
-    <div style="width: 80px;">8</div>
-    <div style="width: 150px;">15</div>
-    <div style="width: 160px;">16</div>
-    <div style="width: 230px;">23</div>
-    <div style="width: 420px;">42</div>
-  </div>
-  <script>
-    let x = d3.scale.linear()
-      .domain([0, d3.max(data)])
-      .range([0, 420]);
-      
-    d3.select(".chart")
-    .selectAll("div")
-      .data(data)
-    .enter().append("div")
-      .style("width", function(d) { return d * 10 + "px"; })
-      .text(function(d) { return d; });
-  </script>
+  <header></header>
 </body>
 </html>
