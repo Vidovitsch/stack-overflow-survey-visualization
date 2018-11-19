@@ -14,6 +14,7 @@
     <script src='https://d3js.org/d3.v5.min.js'></script>
 
     <link rel="stylesheet" type="text/css" href="index.css">
+    <script type="text/javascript" src="load-data.js"></script>
   </head>
   <body>
     <header></header>
@@ -28,26 +29,8 @@
     </div>
   </body>
   <script>
-    const toggleSpinner = function() {
-       const spinner = document.getElementById('circle');
-       if (spinner.style.display == 'block') {
-         spinner.style.display = 'none';
-       } else {
-         spinner.style.display = 'block';
-       }
-    }
-
-    const loadData = (filePath, _cb) => {
-      toggleSpinner();
-      d3.csv(filePath, (data) => {
-        toggleSpinner();
-        _cb(data);
-      });
-    }
-
-    let list = [];
-    loadData('./dataset/2018 Stack Overflow Survey Results.csv', (data) => {
-      list.push(data);
+    loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv', map_rows, 'circle').then((data) => {
+      console.log(data);
     });
   </script>
 </html>
