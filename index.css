@@ -3,7 +3,6 @@ header {
   height: 100px;
   z-index: 999;
   overflow: hidden;
-  position: fixed;
   background-color: #0683c9;
 }
 
@@ -30,4 +29,13 @@ header {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
 }

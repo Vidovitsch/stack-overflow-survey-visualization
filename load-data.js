@@ -1,23 +1,24 @@
-const loadData = (d3, filePath, row_mapper, spinner_id) => {
+const loadData = (d3, filePath) => {
   return new Promise((resolve, reject) => {
-    if (spinner_id) toggleSpinner(spinner_id);
     d3.csv(filePath).then((data) => {
-      data = row_mapper(data);
-      if (spinner_id) toggleSpinner(spinner_id);
-      resolve(data);
+      resolve(map_rows(data));
     }).catch((err) => {
       reject(err);
     });
   })
 }
 
-const toggleSpinner = (id) => {
-   const spinner = document.getElementById(id);
-   if (spinner.style.display == 'block') {
-     spinner.style.display = 'none';
-   } else {
-     spinner.style.display = 'block';
-   }
+const map_rows = (rows) => {
+  return rows.map((row) => {
+    return {
+      LanguageWorkedWith: to_array(row.LanguageWorkedWith),
+      DevType: to_array(row.DevType),
+      ConvertedSalary: +row.ConvertedSalary,
+      Exercise: exercise_to_number(row.Exercise),
+      HoursComputer: computer_to_number(row.HoursComputer),
+      HoursOutside: outside_to_number(row.HoursOutside)
+    }
+  });
 }
 
 const to_array = (value, sep=';') => {
@@ -63,17 +64,4 @@ const outside_to_number = (value) => {
     default:
       return 5;
   }
-}
-
-const map_rows = (rows) => {
-  return rows.map((row) => {
-    return {
-      LanguageWorkedWith: to_array(row.LanguageWorkedWith),
-      DevType: to_array(row.DevType),
-      ConvertedSalary: +row.ConvertedSalary,
-      Exercise: exercise_to_number(row.Exercise),
-      HoursComputer: computer_to_number(row.HoursComputer),
-      HoursOutside: outside_to_number(row.HoursOutside)
-    }
-  });
 }
