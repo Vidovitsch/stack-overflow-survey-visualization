@@ -3,6 +3,7 @@ const Filter = function(data) {
   this.filter = {};
   this.appliedFilter = {};
   this.filteredData = {};
+  this.listeners = [];
 
   Filter.prototype.merge = function(newFilter) {
     Object.keys(newFilter).forEach(key => {
@@ -39,7 +40,15 @@ const Filter = function(data) {
       acc[key] = filter[key];
       return acc;
     }, {});
+    // Invoke listeners
+    this.listeners.forEach(listener => {
+      listener(this.filteredData);
+    });
 
     return this.filteredData;
+  }
+
+  Filter.prototype.onFilterApplied = function(_cb) {
+    this.listeners.push(_cb);
   }
 }

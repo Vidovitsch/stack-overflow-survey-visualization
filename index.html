@@ -81,7 +81,7 @@
       const obj = {};
       obj[subject] = selectedValue;
       filter.merge(obj);
-      console.log(filter.apply());
+      filter.apply();
     }
 
     const fillJobTypeSelection = (data, loader) => {
@@ -127,7 +127,11 @@
       fillCountrySelection(data, loader);
       fillEmploymentSelection(data, loader);
       fillGenderSelection(data, loader);
+
       filter = new Filter(data);
+      filter.onFilterApplied(data => {
+        console.log(data);
+      });
 
       // const languageFrequency = loader.listValuesToFrequencyPairs(data, 'LanguageWorkedWith');
       // hbar(d3, languageFrequency, '#content', {
