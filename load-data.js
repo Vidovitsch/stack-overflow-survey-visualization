@@ -18,12 +18,17 @@ const DataLoader = function (d3) {
         ConvertedSalary: +row.ConvertedSalary,
         Exercise: exercise_to_number(row.Exercise),
         HoursComputer: computer_to_number(row.HoursComputer),
-        HoursOutside: outside_to_number(row.HoursOutside)
+        HoursOutside: outside_to_number(row.HoursOutside),
+        JobSatisfaction: row.JobSatisfaction,
+        Employment: row.Employment,
+        CompanySize: row.CompanySize,
+        Country: row.Country,
+        Gender: to_array(row.Gender)
       };
     });
   }
 
-  DataLoader.prototype.listsToFrequencyPairs = function (data, property) {
+  DataLoader.prototype.listValuesToFrequencyPairs = function (data, property) {
     // Create dictionary of frequency per value
     const frequencyCounter = data.reduce((frequencyCounter, row) => {
       row[property].forEach((value) => {
@@ -44,6 +49,16 @@ const DataLoader = function (d3) {
       return a.value - b.value;
     });
     return value_counts;
+  }
+
+  DataLoader.prototype.getUniques = function (data, property) {
+    const uniques = Object.keys(data.reduce((uniques, row) => {
+      const value = row[property];
+      if (value instanceof Array) value.forEach((value) => { uniques[value] = 0; });
+      else uniques[value] = 0;
+      return uniques;
+    }, {}));
+    return uniques.filter(value => value != '');
   }
 
   const to_array = (value, sep=';') => {

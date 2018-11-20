@@ -3,7 +3,7 @@ header {
   height: 100px;
   z-index: 999;
   overflow: hidden;
-  background-color: #0683c9;
+  background-color: #3D73FB;
 }
 
 #circle {
@@ -20,7 +20,7 @@ header {
   width: calc(100% - 0px);
 	height: calc(100% - 0px);
 	border: 8px solid #FFFFFF;
-	border-top: 8px solid #0683C9;
+	border-top: 8px solid #3D73FB;
 	border-radius: 50%;
 	animation: rotate 5s linear infinite;
 }
@@ -29,13 +29,4 @@ header {
   100% {
     transform: rotate(360deg);
   }
-}
-
-.chart div {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: right;
-  padding: 3px;
-  margin: 1px;
-  color: white;
 }
