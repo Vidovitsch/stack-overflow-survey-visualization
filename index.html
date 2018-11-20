@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" type="text/css" href="index.css">
     <script type="text/javascript" src="load-data.js"></script>
+    <script type="text/javascript" src="hbar-chart.js"></script>
   </head>
   <body>
     <header></header>
@@ -32,27 +33,7 @@
     </div>
   </body>
   <script>
-    const countValues = (data, property, sorted=true) => {
-      let value_counts = [];
-      const counter = data.reduce((counter, row) => {
-        row[property].forEach((value) => {
-          if (value in counter) counter[value] += 1;
-          else counter[value] = 1;
-        });
-        return counter;
-      }, {});
-      Object.keys(counter).forEach((key) => {
-        value_counts.push([key, counter[key]]);
-      });
-      if (sorted) {
-        value_counts = value_counts.sort((a, b) => {
-          return a[1] - b[1];
-        });
-      }
-      return value_counts;
-    }
-
-    const toggle_loading = (on_load_id='circle', load_done_id='content') => {
+    const toggleSpinner = (on_load_id='circle', load_done_id='content') => {
        const spinner = document.getElementById(on_load_id);
        const content = document.getElementById(load_done_id);
        if (spinner.style.display == 'block' && content.style.display == 'none') {
@@ -63,45 +44,20 @@
          content.style.display = 'none';
        }
     }
-
-    toggle_loading();
-    loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv').then(function(data) {
-      const language_frequency = countValues(data, 'LanguageWorkedWith');
-
-      const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-      const width = 400 - margin.left - margin.right;
-      const height = 650 - margin.top - margin.bottom;
-
-      // set the ranges
-      const y = d3.scaleBand()
-                  .range([height, 0])
-                  .padding(0.2);
-      const x = d3.scaleLinear()
-                  .range([0, width]);
-
-      const svg = d3.select("#content").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-          .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
-
-        x.domain([0, d3.max(language_frequency, function(d) { return d[1]; })])
-        y.domain(language_frequency.map(function(d) { return d[0]; }));
-
-        svg.selectAll(".bar")
-            .data(language_frequency)
-          .enter().append("rect")
-            .attr("class", "bar")
-            //.attr("x", function(d) { return x(d.sales); })
-            .attr("width", function(d) {return x(d[1]); } )
-            .attr("y", function(d) { return y(d[0]); })
-            .attr("height", y.bandwidth());
-
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        toggle_loading();
+    toggleSpinner();
+    const loader = new DataLoader(d3);
+    loader.loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv', loader.defaultMapper).then(function(data) {
+      console.log('here');
+      const languageFrequency = loader.listsToFrequencyPairs(data, 'LanguageWorkedWith');
+      console.log(languageFrequency);
+      hbar(d3, languageFrequency, '#content', {
+        margin: { top: 40, right: 40, bottom: 40, left: 40 },
+        width: 400,
+        height: 550
+      });
+      console.log('here');
+      toggleSpinner();
+      console.log('here');
     });
   </script>
 </html>
