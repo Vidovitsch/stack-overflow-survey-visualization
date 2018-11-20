@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" type="text/css" href="index.css">
     <script type="text/javascript" src="load-data.js"></script>
+    <script type="text/javascript" src="filter.js"></script>
     <script type="text/javascript" src="hbar-chart.js"></script>
   </head>
   <body>
@@ -33,27 +34,27 @@
     <div id="container">
       <div class="dropdown-bar">
         <div class="dropdown">
-          <button id="jobtype-dropdown" class="btn dropdown-toggle dropdown-" type="button" data-toggle="dropdown">Job Types
+          <button id="jobtype-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Job Types
             <span class="caret"></span></button>
           <ul id="jobtype-dropdown-menu" class="dropdown-menu"></ul>
         </div>
         <div class="dropdown">
-          <button id="companysize-dropdown" class="btn dropdown-toggle dropdown-" type="button" data-toggle="dropdown">Job Types
+          <button id="companysize-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Company Size
             <span class="caret"></span></button>
           <ul id="companysize-dropdown-menu" class="dropdown-menu"></ul>
         </div>
         <div class="dropdown">
-          <button id="country-dropdown" class="btn dropdown-toggle dropdown-" type="button" data-toggle="dropdown">Country
+          <button id="country-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Country
             <span class="caret"></span></button>
           <ul id="country-dropdown-menu" class="dropdown-menu"></ul>
         </div>
         <div class="dropdown">
-          <button id="employment-dropdown" class="btn dropdown-toggle dropdown-" type="button" data-toggle="dropdown">Employment
+          <button id="employment-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Employment
             <span class="caret"></span></button>
           <ul id="employment-dropdown-menu" class="dropdown-menu"></ul>
         </div>
         <div class="dropdown">
-          <button id="gender-dropdown" class="btn dropdown-toggle dropdown-" type="button" data-toggle="dropdown">Gender
+          <button id="gender-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Gender
             <span class="caret"></span></button>
           <ul id="gender-dropdown-menu" class="dropdown-menu"></ul>
         </div>
@@ -61,6 +62,8 @@
     </div>
   </body>
   <script>
+    let filter = {};
+
     const toggleSpinner = (on_load_id='circle', load_done_id='container') => {
        const spinner = document.getElementById(on_load_id);
        const content = document.getElementById(load_done_id);
@@ -73,47 +76,46 @@
        }
     }
 
-    const onJobTypeSelected = (selectedValue, subject, dropdownId) => {
+    const onSelected = (selectedValue, subject, dropdownId) => {
       document.getElementById(dropdownId).innerText = selectedValue;
+      const obj = {};
+      obj[subject] = selectedValue;
+      filter.merge(obj);
+      filter.apply();
     }
 
     const fillJobTypeSelection = (data, loader) => {
       const container = document.getElementById("jobtype-dropdown-menu");
       loader.getUniques(data, 'DevType').forEach((value) => {
-        container.innerHTML += '<li><a onclick="onJobTypeSelected(\'' + value + '\', \'DevType\', \'jobtype-dropdown\')"' +
-          'href="#">' + value + '</a></li>';
+        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'DevType\', \'jobtype-dropdown\')"><div>' + value + '</div></li>';
       });
     }
 
     const fillCompanySizeSelection = (data, loader) => {
       const container = document.getElementById("companysize-dropdown-menu");
       loader.getUniques(data, 'CompanySize').forEach((value) => {
-        container.innerHTML += '<li><a onclick="onJobTypeSelected(\'' + value + '\', \'CompanySize\', \'companysize-dropdown\')"' +
-          'href="#">' + value + '</a></li>';
+        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'CompanySize\', \'companysize-dropdown\')"><div>' + value + '</div></li>';
       });
     }
 
     const fillCountrySelection = (data, loader) => {
       const container = document.getElementById("country-dropdown-menu");
       loader.getUniques(data, 'Country').forEach((value) => {
-        container.innerHTML += '<li><a onclick="onJobTypeSelected(\'' + value + '\', \'Country\', \'country-dropdown\')"' +
-          'href="#">' + value + '</a></li>';
+        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Country\', \'country-dropdown\')"><div>' + value + '</div></li>';
       });
     }
 
     const fillEmploymentSelection = (data, loader) => {
       const container = document.getElementById("employment-dropdown-menu");
       loader.getUniques(data, 'Employment').forEach((value) => {
-        container.innerHTML += '<li><a onclick="onJobTypeSelected(\'' + value + '\', \'Employment\', \'employment-dropdown\')"' +
-          'href="#">' + value + '</a></li>';
+        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Employment\', \'employment-dropdown\')"><div>' + value + '</div></li>';
       });
     }
 
     const fillGenderSelection = (data, loader) => {
       const container = document.getElementById("gender-dropdown-menu");
       loader.getUniques(data, 'Gender').forEach((value) => {
-        container.innerHTML += '<li><a onclick="onJobTypeSelected(\'' + value + '\', \'Gender\', \'gender-dropdown\')"' +
-          'href="#">' + value + '</a></li>';
+        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Gender\', \'gender-dropdown\')"><div>' + value + '</div></li>';
       });
     }
 
@@ -125,6 +127,8 @@
       fillCountrySelection(data, loader);
       fillEmploymentSelection(data, loader);
       fillGenderSelection(data, loader);
+      filter = new Filter(data);
+
       // const languageFrequency = loader.listValuesToFrequencyPairs(data, 'LanguageWorkedWith');
       // hbar(d3, languageFrequency, '#content', {
       //   margin: { top: 40, right: 40, bottom: 40, left: 40 },

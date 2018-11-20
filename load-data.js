@@ -58,10 +58,13 @@ const DataLoader = function (d3) {
       else uniques[value] = 0;
       return uniques;
     }, {}));
-    return uniques.filter(value => value != '');
+    return uniques.filter(value => value != '').sort((a, b) => {
+      return a - b
+    });
   }
 
   const to_array = (value, sep=';') => {
+    if (value.length == 0) return null;
     return value.split(sep);
   }
 

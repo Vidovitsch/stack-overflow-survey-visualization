@@ -30,3 +30,43 @@ header {
     transform: rotate(360deg);
   }
 }
+
+.dropdown-bar {
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-bar .dropdown {
+  float: left;
+  width: 20%;
+}
+
+.btn {
+  border-radius: 0px;
+  width: 100%;
+  background-color: #3DA8FB;
+  border: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.dropdown-menu {
+  max-height: 350px;
+  overflow:auto;
+}
+
+.dropdown-menu div {
+  text-decoration: none;
+  color: #212529;
+  padding: 0px 10px 0px 10px;
+}
+
+.dropdown-menu li:hover {
+  background-color: #EEEEEE;
+  cursor: pointer;
+}
