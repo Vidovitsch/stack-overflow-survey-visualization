@@ -78,14 +78,19 @@
 
     const onSelected = (selectedValue, subject, dropdownId) => {
       document.getElementById(dropdownId).innerText = selectedValue;
-      const obj = {};
-      obj[subject] = selectedValue;
-      filter.merge(obj);
+      if (selectedValue == 'All') {
+        filter.remove(subject);
+      } else {
+        const obj = {};
+        obj[subject] = selectedValue;
+        filter.merge(obj);
+      }
       filter.apply();
     }
 
     const fillJobTypeSelection = (data, loader) => {
       const container = document.getElementById("jobtype-dropdown-menu");
+      container.innerHTML += '<li onclick="onSelected(\'All\', \'DevType\', \'jobtype-dropdown\')"><div>All</div></li>';
       loader.getUniques(data, 'DevType').forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'DevType\', \'jobtype-dropdown\')"><div>' + value + '</div></li>';
       });
@@ -93,6 +98,7 @@
 
     const fillCompanySizeSelection = (data, loader) => {
       const container = document.getElementById("companysize-dropdown-menu");
+      container.innerHTML += '<li onclick="onSelected(\'All\', \'CompanySize\', \'companysize-dropdown\')"><div>All</div></li>';
       loader.getUniques(data, 'CompanySize').forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'CompanySize\', \'companysize-dropdown\')"><div>' + value + '</div></li>';
       });
@@ -100,6 +106,7 @@
 
     const fillCountrySelection = (data, loader) => {
       const container = document.getElementById("country-dropdown-menu");
+      container.innerHTML += '<li onclick="onSelected(\'All\', \'Country\', \'country-dropdown\')"><div>All</div></li>';
       loader.getUniques(data, 'Country').forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Country\', \'country-dropdown\')"><div>' + value + '</div></li>';
       });
@@ -107,6 +114,7 @@
 
     const fillEmploymentSelection = (data, loader) => {
       const container = document.getElementById("employment-dropdown-menu");
+      container.innerHTML += '<li onclick="onSelected(\'All\', \'Employment\', \'employment-dropdown\')"><div>All</div></li>';
       loader.getUniques(data, 'Employment').forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Employment\', \'employment-dropdown\')"><div>' + value + '</div></li>';
       });
@@ -114,6 +122,7 @@
 
     const fillGenderSelection = (data, loader) => {
       const container = document.getElementById("gender-dropdown-menu");
+      container.innerHTML += '<li onclick="onSelected(\'All\', \'Gender\', \'gender-dropdown\')"><div>All</div></li>';
       loader.getUniques(data, 'Gender').forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Gender\', \'gender-dropdown\')"><div>' + value + '</div></li>';
       });

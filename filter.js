@@ -12,6 +12,10 @@ const Filter = function(data) {
     return this.filter;
   }
 
+  Filter.prototype.remove = function(key) {
+    delete this.filter[key];
+  }
+
   Filter.prototype.apply = function() {
     // Optimization
     // If new filter is almost the same as old one (extension of):
