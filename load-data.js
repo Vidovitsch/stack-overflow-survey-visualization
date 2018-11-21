@@ -59,12 +59,12 @@ const DataLoader = function (d3) {
       return uniques;
     }, {}));
     return uniques.filter(value => value != '').sort((a, b) => {
-      return a - b
+      return a.localeCompare(b);
     });
   }
 
   const to_array = (value, sep=';') => {
-    if (value.length == 0) return null;
+    if (value.length == 0) return [];
     return value.split(sep);
   }
 
