@@ -10,6 +10,53 @@ const DataLoader = function (d3) {
     });
   }
 
+  DataLoader.prototype.getUniques = function (data, property) {
+    const uniques = Object.keys(data.reduce((uniques, row) => {
+      const value = row[property];
+      if (value instanceof Array) value.forEach((value) => { uniques[value] = 0; });
+      else uniques[value] = 0;
+      return uniques;
+    }, {}));
+    return uniques.filter(value => value != '').sort((a, b) => {
+      return a.localeCompare(b);
+    });
+  }
+
+  DataLoader.prototype.valueCounter = function(data, col) {
+    console.log(data);
+    let total = 0;
+    const counter = data.reduce((counter, row) => {
+      const value = row[col];
+      if (value instanceof Array) {
+        if (value.length > 0) {
+          value.forEach(v => {
+            if (v in counter) counter[v] += 1;
+            else counter[v] = 1;
+          });
+          total += 1;
+        }
+      } else {
+        if (value in frequency) frequency[value] += 1;
+        else frequency[value] = 1;
+        total += 1;
+      }
+      return counter;
+    }, {});
+    console.log(total);
+    return { counter, total };
+  }
+
+  DataLoader.prototype.toOrdinalData = function(data, col) {
+    const { counter, total } = this.valueCounter(data, col);
+    const ordinalData =  Object.keys(counter).reduce((frequencyList, key) => {
+      frequencyList.push([key, counter[key] / total]);
+      return frequencyList;
+    }, []).sort((a, b) => {
+      return a[1] - b[1];
+    });
+    return { ordinalData, total };
+  }
+
   DataLoader.prototype.defaultMapper = function (rows) {
     return rows.map((row) => {
       return {
@@ -25,41 +72,6 @@ const DataLoader = function (d3) {
         Country: row.Country,
         Gender: to_array(row.Gender)
       };
-    });
-  }
-
-  DataLoader.prototype.listValuesToFrequencyPairs = function (data, property) {
-    // Create dictionary of frequency per value
-    const frequencyCounter = data.reduce((frequencyCounter, row) => {
-      row[property].forEach((value) => {
-        if (value in frequencyCounter) frequencyCounter[value] += 1;
-        else frequencyCounter[value] = 1;
-      });
-      return frequencyCounter;
-    }, {});
-
-    let value_counts = [];
-    // Dictionary to list of key value pairs.
-    // Value is in percentage / 100.
-    Object.keys(frequencyCounter).forEach((key) => {
-      value_counts.push({ key, value: frequencyCounter[key] / data.length });
-    });
-    // Sort list of key value pairs
-    value_counts = value_counts.sort((a, b) => {
-      return a.value - b.value;
-    });
-    return value_counts;
-  }
-
-  DataLoader.prototype.getUniques = function (data, property) {
-    const uniques = Object.keys(data.reduce((uniques, row) => {
-      const value = row[property];
-      if (value instanceof Array) value.forEach((value) => { uniques[value] = 0; });
-      else uniques[value] = 0;
-      return uniques;
-    }, {}));
-    return uniques.filter(value => value != '').sort((a, b) => {
-      return a.localeCompare(b);
     });
   }
 

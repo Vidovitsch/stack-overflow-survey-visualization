@@ -60,6 +60,7 @@
         </div>
       <div class="dropdown-bar" />
     </div>
+  </div>
   </body>
   <script>
     let filter = {};
@@ -138,16 +139,21 @@
       fillGenderSelection(data, loader);
 
       filter = new Filter(data);
-      filter.onFilterApplied(data => {
-        console.log(data);
+      const hbar = new Hbar(d3);
+      const { ordinalData, total } = loader.toOrdinalData(data, 'LanguageWorkedWith');
+      hbar.plot(ordinalData, {
+        container: '#container',
+        width: 400,
+        height: 550,
+        margin: { top: 0, right: 60, bottom: 0, left: 120 },
+        padding: 0.1
       });
 
-      // const languageFrequency = loader.listValuesToFrequencyPairs(data, 'LanguageWorkedWith');
-      // hbar(d3, languageFrequency, '#content', {
-      //   margin: { top: 40, right: 40, bottom: 40, left: 40 },
-      //   width: 400,
-      //   height: 550
-      // });
+      filter.onFilterApplied(data => {
+        const { ordinalData, total } = loader.toOrdinalData(data, 'LanguageWorkedWith');
+        hbar.updateData(ordinalData);
+      });
+
       toggleSpinner();
     });
   </script>
