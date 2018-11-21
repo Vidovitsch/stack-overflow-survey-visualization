@@ -23,7 +23,6 @@ const DataLoader = function (d3) {
   }
 
   DataLoader.prototype.valueCounter = function(data, col) {
-    console.log(data);
     let total = 0;
     const counter = data.reduce((counter, row) => {
       const value = row[col];
@@ -42,7 +41,6 @@ const DataLoader = function (d3) {
       }
       return counter;
     }, {});
-    console.log(total);
     return { counter, total };
   }
 

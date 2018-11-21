@@ -52,23 +52,29 @@ const Hbar = function(d3) {
         .attr('height', this.yScale.bandwidth())
         .transition()
         .duration(1500)
-        .attr('width', (d) => {return this.xScale(d[1]);})
-        .attr('fill', (d) => {
-          return this.colors[Math.abs(Math.round(d[1] * 20) - 19)];
-        });
+          .attr('width', (d) => {return this.xScale(d[1]);})
+          .attr('fill', (d) => {
+            return this.colors[Math.abs(Math.round(d[1] * 20) - 19)];
+          });
 
     this.svg.selectAll('text')
       .data(data)
       .enter()
       .append('text')
       .attr("class", "label")
-      .text(function(d) { return Math.round(d[1] * 100); })
-      .attr('x', (d) => {
-        return this.xScale(d[1]) + 2;
+      .text((d) => {
+        return Math.round(d[1] * 100);
       })
       .attr('y', (d) => {
         return this.yScale(d[0]) + this.yScale.bandwidth();
       })
+
+    this.svg.selectAll('text').transition()
+    .duration(1500)
+      .attr('x', (d) => {
+        return this.xScale(d[1]) + 2;
+      })
+
 
     // Show y-ax
     this.svg.append('g')
@@ -104,9 +110,18 @@ const Hbar = function(d3) {
           if (label in data_dict) return Math.round(data_dict[label] * 100);
           return '';
         })
-        .attr('x', (label) => {
-          if (label in data_dict) return this.xScale(data_dict[label]) + 2;
-          return 2;
-        })
+        .transition()
+        .duration(1500)
+          .attr('x', (label) => {
+            if (label in data_dict) return this.xScale(data_dict[label]) + 2;
+            return 2;
+          })
+          .tween("text", function(label) {
+            var i = d3.interpolate(this.textContent, data_dict[label]);
+
+            return function(t) {
+                this.textContent = data_dict[label];
+            };
+          })
   }
 }
