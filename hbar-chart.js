@@ -4,9 +4,14 @@ const Hbar = function(d3) {
   this.xScale = {};
   this.yScale = {};
   this.yLabels = [];
+  this.colors = ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB', '#635BFB',
+    '#6B63FB', '#736CFC', '#7B74FC', '#827CFC', '#8A84FC',
+    '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD', '#B1ADFD',
+    '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD'];
 
   Hbar.prototype.plot = function(data, options) {
     const { width, height, margin, padding, container } = options;
+    const colorGradient = []
 
     // Set scale of y-ax
     this.yScale = this.d3.scaleBand()
@@ -47,14 +52,17 @@ const Hbar = function(d3) {
         .attr('height', this.yScale.bandwidth())
         .transition()
         .duration(1500)
-        .attr('width', (d) => {return this.xScale(d[1]);});
+        .attr('width', (d) => {return this.xScale(d[1]);})
+        .attr('fill', (d) => {
+          return this.colors[Math.abs(Math.round(d[1] * 20) - 19)];
+        });
 
     this.svg.selectAll('text')
       .data(data)
       .enter()
       .append('text')
       .attr("class", "label")
-      .text(function(d) { return Math.round(d[1] * 100) + '%'; })
+      .text(function(d) { return Math.round(d[1] * 100); })
       .attr('x', (d) => {
         return this.xScale(d[1]) + 2;
       })
@@ -83,15 +91,18 @@ const Hbar = function(d3) {
       .attr('width', (label) => {
         if (label in data_dict) return this.xScale(data_dict[label]);
         return this.xScale(0);
+      })
+      .attr('fill', (label) => {
+        if (label in data_dict) return this.colors[Math.abs(Math.round(data_dict[label] * 20) - 19)];
+        return this.colors[10];
       });
 
       this.svg.selectAll('text')
         .data(this.yLabels)
         .attr("class", "label")
         .text(function(label) {
-          console.log(label);
-          if (label in data_dict) return Math.round(data_dict[label] * 100) + '%';
-          return 0 + '%';
+          if (label in data_dict) return Math.round(data_dict[label] * 100);
+          return '';
         })
         .attr('x', (label) => {
           if (label in data_dict) return this.xScale(data_dict[label]) + 2;
