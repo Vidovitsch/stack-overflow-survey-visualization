@@ -10,51 +10,6 @@ const DataLoader = function (d3) {
     });
   }
 
-  DataLoader.prototype.getUniques = function (data, property) {
-    const uniques = Object.keys(data.reduce((uniques, row) => {
-      const value = row[property];
-      if (value instanceof Array) value.forEach((value) => { uniques[value] = 0; });
-      else uniques[value] = 0;
-      return uniques;
-    }, {}));
-    return uniques.filter(value => value != '').sort((a, b) => {
-      return a.localeCompare(b);
-    });
-  }
-
-  DataLoader.prototype.valueCounter = function(data, col) {
-    let total = 0;
-    const counter = data.reduce((counter, row) => {
-      const value = row[col];
-      if (value instanceof Array) {
-        if (value.length > 0) {
-          value.forEach(v => {
-            if (v in counter) counter[v] += 1;
-            else counter[v] = 1;
-          });
-          total += 1;
-        }
-      } else {
-        if (value in frequency) frequency[value] += 1;
-        else frequency[value] = 1;
-        total += 1;
-      }
-      return counter;
-    }, {});
-    return { counter, total };
-  }
-
-  DataLoader.prototype.toOrdinalData = function(data, col) {
-    const { counter, total } = this.valueCounter(data, col);
-    const ordinalData =  Object.keys(counter).reduce((frequencyList, key) => {
-      frequencyList.push([key, counter[key] / total]);
-      return frequencyList;
-    }, []).sort((a, b) => {
-      return a[1] - b[1];
-    });
-    return { ordinalData, total };
-  }
-
   DataLoader.prototype.defaultMapper = function (rows) {
     return rows.map((row) => {
       return {

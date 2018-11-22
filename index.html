@@ -17,6 +17,7 @@
     <script type="text/javascript" src="load-data.js"></script>
     <script type="text/javascript" src="filter.js"></script>
     <script type="text/javascript" src="hbar-chart.js"></script>
+    <script type="text/javascript" src="util.js"></script>
   </head>
   <body>
     <header></header>
@@ -92,7 +93,9 @@
     const fillJobTypeSelection = (data, loader) => {
       const container = document.getElementById("jobtype-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'DevType\', \'jobtype-dropdown\')"><div>All</div></li>';
-      loader.getUniques(data, 'DevType').forEach((value) => {
+      uniques(data, 'DevType').sort((a, b) => {
+        return a.localeCompare(b);
+      }).forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'DevType\', \'jobtype-dropdown\')"><div>' + value + '</div></li>';
       });
     }
@@ -100,7 +103,9 @@
     const fillCompanySizeSelection = (data, loader) => {
       const container = document.getElementById("companysize-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'CompanySize\', \'companysize-dropdown\')"><div>All</div></li>';
-      loader.getUniques(data, 'CompanySize').forEach((value) => {
+      uniques(data, 'CompanySize').sort((a, b) => {
+        return a.localeCompare(b);
+      }).forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'CompanySize\', \'companysize-dropdown\')"><div>' + value + '</div></li>';
       });
     }
@@ -108,7 +113,9 @@
     const fillCountrySelection = (data, loader) => {
       const container = document.getElementById("country-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Country\', \'country-dropdown\')"><div>All</div></li>';
-      loader.getUniques(data, 'Country').forEach((value) => {
+      uniques(data, 'Country').sort((a, b) => {
+        return a.localeCompare(b);
+      }).forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Country\', \'country-dropdown\')"><div>' + value + '</div></li>';
       });
     }
@@ -116,7 +123,9 @@
     const fillEmploymentSelection = (data, loader) => {
       const container = document.getElementById("employment-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Employment\', \'employment-dropdown\')"><div>All</div></li>';
-      loader.getUniques(data, 'Employment').forEach((value) => {
+      uniques(data, 'Employment').sort((a, b) => {
+        return a.localeCompare(b);
+      }).forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Employment\', \'employment-dropdown\')"><div>' + value + '</div></li>';
       });
     }
@@ -129,7 +138,9 @@
     const fillGenderSelection = (data, loader) => {
       const container = document.getElementById("gender-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Gender\', \'gender-dropdown\')"><div>All</div></li>';
-      loader.getUniques(data, 'Gender').forEach((value) => {
+      uniques(data, 'Gender').sort((a, b) => {
+        return a.localeCompare(b);
+      }).forEach((value) => {
         container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Gender\', \'gender-dropdown\')"><div>' + value + '</div></li>';
       });
     }
@@ -147,22 +158,26 @@
       filter = new Filter(data);
       filter.apply();
 
+      // Plot horizontal bar chart
       const hbar = new Hbar(d3);
-      const { ordinalData, total } = loader.toOrdinalData(data, 'LanguageWorkedWith');
-      hbar.plot(ordinalData, {
+      const hbarOptions = {
         container: '#container',
         width: 450,
         height: 550,
         margin: { top: 0, right: 60, bottom: 0, left: 120 },
         padding: 0.1
-      });
+      }
+      const hbarData = sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
+        return value / data.length;
+      }), true);
+      hbar.plot(hbarData, hbarOptions);
 
       filter.onFilterApplied(data => {
-        const { ordinalData, total } = loader.toOrdinalData(data, 'LanguageWorkedWith');
         updateDashboardTitle(data.length);
-        hbar.updateData(ordinalData);
+        hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
+          return value / data.length;
+        }), true));
       });
-
       toggleSpinner();
     });
   </script>

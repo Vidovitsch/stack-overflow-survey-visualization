@@ -27,7 +27,7 @@ const Hbar = function(d3) {
 
     // Fit ordinal data points on y-ax
     this.yScale.domain(data.map(function(d) {
-      return d[0];
+      return d.key;
     }));
 
     // Create SVG
@@ -46,15 +46,15 @@ const Hbar = function(d3) {
         .attr('class', 'bar')
         .attr('width', 0)
         .attr('y', (d) => {
-          this.yLabels.push(d[0]);
-          return this.yScale(d[0]);
+          this.yLabels.push(d.key);
+          return this.yScale(d.key);
         })
         .attr('height', this.yScale.bandwidth())
         .transition()
         .duration(1500)
-          .attr('width', (d) => {return this.xScale(d[1]);})
+          .attr('width', (d) => {return this.xScale(d.value);})
           .attr('fill', (d) => {
-            return this.colors[Math.abs(Math.round(d[1] * 20) - 19)];
+            return this.colors[Math.abs(Math.round(d.value * 20) - 19)];
           });
 
     this.svg.selectAll('text')
@@ -63,18 +63,17 @@ const Hbar = function(d3) {
       .append('text')
       .attr("class", "label")
       .text((d) => {
-        return Math.round(d[1] * 100);
+        return Math.round(d.value * 100);
       })
       .attr('y', (d) => {
-        return this.yScale(d[0]) + this.yScale.bandwidth();
+        return this.yScale(d.key) + this.yScale.bandwidth();
       })
 
     this.svg.selectAll('text').transition()
     .duration(1500)
       .attr('x', (d) => {
-        return this.xScale(d[1]) + 2;
+        return this.xScale(d.value) + 2;
       })
-
 
     // Show y-ax
     this.svg.append('g')
@@ -85,7 +84,7 @@ const Hbar = function(d3) {
     // Convert list presentation of the data back
     // to a dictionary presentation for faster lookup.
     const data_dict = data.reduce((acc, kvPair) => {
-      acc[kvPair[0]] = kvPair[1];
+      acc[kvPair.key] = kvPair.value;
       return acc;
     }, {});
 
@@ -115,13 +114,6 @@ const Hbar = function(d3) {
           .attr('x', (label) => {
             if (label in data_dict) return this.xScale(data_dict[label]) + 2;
             return 2;
-          })
-          .tween("text", function(label) {
-            var i = d3.interpolate(this.textContent, data_dict[label]);
-
-            return function(t) {
-                this.textContent = data_dict[label];
-            };
           })
   }
 }
