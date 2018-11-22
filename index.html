@@ -21,7 +21,6 @@
   </head>
   <body>
     <header></header>
-
     <div id="circle">
       <div class="loader">
         <div class="loader">
@@ -31,52 +30,35 @@
         </div>
       </div>
     </div>
-
     <div id="container">
-      <div class="dropdown-bar">
-        <div class="dropdown">
-          <button id="jobtype-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Job Types
-            <span class="caret"></span></button>
-          <ul id="jobtype-dropdown-menu" class="dropdown-menu"></ul>
-        </div>
-        <div class="dropdown">
-          <button id="companysize-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Company Size
-            <span class="caret"></span></button>
-          <ul id="companysize-dropdown-menu" class="dropdown-menu"></ul>
-        </div>
-        <div class="dropdown">
-          <button id="country-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Country
-            <span class="caret"></span></button>
-          <ul id="country-dropdown-menu" class="dropdown-menu"></ul>
-        </div>
-        <div class="dropdown">
-          <button id="employment-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Employment
-            <span class="caret"></span></button>
-          <ul id="employment-dropdown-menu" class="dropdown-menu"></ul>
-        </div>
-        <div class="dropdown">
-          <button id="gender-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">Gender
-            <span class="caret"></span></button>
-          <ul id="gender-dropdown-menu" class="dropdown-menu"></ul>
-        </div>
-    </div>
+      <div id="dropdown-bar" class="dropdown-bar"></div>
     <h2 id='dashboard-title'></h2>
   </div>
   </body>
   <script>
     let filter = {};
 
-    const toggleSpinner = (on_load_id='circle', load_done_id='container') => {
-       const spinner = document.getElementById(on_load_id);
-       const content = document.getElementById(load_done_id);
-       if (spinner.style.display == 'block' && content.style.display == 'none') {
-         spinner.style.display = 'none';
-         content.style.display = 'block';
-       } else {
-         spinner.style.display = 'block';
-         content.style.display = 'none';
-       }
-    }
+    const createSelectionMenu = (data, containerId, dropdowns) => {
+      const container = document.getElementById(containerId);
+      Object.keys(dropdowns).forEach((key) => {
+        // Create button with dropdown menu
+        container.innerHTML +=
+          '<div class="dropdown">' +
+            '<button id="' + key + '-dropdown" class="btn dropdown-toggle btn-primary" type="button" ' +
+              'data-toggle="dropdown">' + dropdowns[key] +
+            '<span class="caret"></span></button>' +
+            '<ul  id="' + key + '-dropdown-menu" class="dropdown-menu"></ul>' +
+          '</div>';
+        // Fill dropdown menu
+        const menu = document.getElementById(key + '-dropdown-menu');
+        menu.innerHTML += '<li onclick="onSelected(\'All\', \'' + dropdowns[key] + '\', \'' + key + '-dropdown\')"><div>All</div></li>';
+        uniques(data, dropdowns[key]).sort((a, b) => {
+          return a.localeCompare(b);
+        }).forEach((value) => {
+          menu.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'' + dropdowns[key] + '\', \'' + key + '-dropdown\')"><div>' + value + '</div></li>';
+        });
+      });
+    };
 
     const onSelected = (selectedValue, subject, dropdownId) => {
       document.getElementById(dropdownId).innerText = selectedValue;
@@ -90,70 +72,33 @@
       filter.apply();
     }
 
-    const fillJobTypeSelection = (data) => {
-      const container = document.getElementById("jobtype-dropdown-menu");
-      container.innerHTML += '<li onclick="onSelected(\'All\', \'DevType\', \'jobtype-dropdown\')"><div>All</div></li>';
-      uniques(data, 'DevType').sort((a, b) => {
-        return a.localeCompare(b);
-      }).forEach((value) => {
-        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'DevType\', \'jobtype-dropdown\')"><div>' + value + '</div></li>';
-      });
-    }
-
-    const fillCompanySizeSelection = (data) => {
-      const container = document.getElementById("companysize-dropdown-menu");
-      container.innerHTML += '<li onclick="onSelected(\'All\', \'CompanySize\', \'companysize-dropdown\')"><div>All</div></li>';
-      uniques(data, 'CompanySize').sort((a, b) => {
-        return a.localeCompare(b);
-      }).forEach((value) => {
-        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'CompanySize\', \'companysize-dropdown\')"><div>' + value + '</div></li>';
-      });
-    }
-
-    const fillCountrySelection = (data) => {
-      const container = document.getElementById("country-dropdown-menu");
-      container.innerHTML += '<li onclick="onSelected(\'All\', \'Country\', \'country-dropdown\')"><div>All</div></li>';
-      uniques(data, 'Country').sort((a, b) => {
-        return a.localeCompare(b);
-      }).forEach((value) => {
-        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Country\', \'country-dropdown\')"><div>' + value + '</div></li>';
-      });
-    }
-
-    const fillEmploymentSelection = (data) => {
-      const container = document.getElementById("employment-dropdown-menu");
-      container.innerHTML += '<li onclick="onSelected(\'All\', \'Employment\', \'employment-dropdown\')"><div>All</div></li>';
-      uniques(data, 'Employment').sort((a, b) => {
-        return a.localeCompare(b);
-      }).forEach((value) => {
-        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Employment\', \'employment-dropdown\')"><div>' + value + '</div></li>';
-      });
-    }
-
     const updateDashboardTitle = (value) => {
       const title = document.getElementById("dashboard-title");
       title.innerText = 'Results of ' + value + ' software developers';
     }
 
-    const fillGenderSelection = (data) => {
-      const container = document.getElementById("gender-dropdown-menu");
-      container.innerHTML += '<li onclick="onSelected(\'All\', \'Gender\', \'gender-dropdown\')"><div>All</div></li>';
-      uniques(data, 'Gender').sort((a, b) => {
-        return a.localeCompare(b);
-      }).forEach((value) => {
-        container.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'Gender\', \'gender-dropdown\')"><div>' + value + '</div></li>';
-      });
+    const toggleSpinner = (on_load_id='circle', load_done_id='container') => {
+       const spinner = document.getElementById(on_load_id);
+       const content = document.getElementById(load_done_id);
+       if (spinner.style.display == 'block' && content.style.display == 'none') {
+         spinner.style.display = 'none';
+         content.style.display = 'block';
+       } else {
+         spinner.style.display = 'block';
+         content.style.display = 'none';
+       }
     }
 
     toggleSpinner();
     loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv').then(function(data) {
+      createSelectionMenu(data, 'dropdown-bar', {
+        jobtype: 'DevType',
+        companysize: 'CompanySize',
+        country: 'Country',
+        employment: 'Employment',
+        gender: 'Gender'
+      });
       updateDashboardTitle(data.length);
-      fillJobTypeSelection(data);
-      fillCompanySizeSelection(data);
-      fillCountrySelection(data);
-      fillEmploymentSelection(data);
-      fillGenderSelection(data);
-
       filter = new Filter(data);
       filter.apply();
 
