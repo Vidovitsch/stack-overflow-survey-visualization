@@ -90,7 +90,7 @@
       filter.apply();
     }
 
-    const fillJobTypeSelection = (data, loader) => {
+    const fillJobTypeSelection = (data) => {
       const container = document.getElementById("jobtype-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'DevType\', \'jobtype-dropdown\')"><div>All</div></li>';
       uniques(data, 'DevType').sort((a, b) => {
@@ -100,7 +100,7 @@
       });
     }
 
-    const fillCompanySizeSelection = (data, loader) => {
+    const fillCompanySizeSelection = (data) => {
       const container = document.getElementById("companysize-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'CompanySize\', \'companysize-dropdown\')"><div>All</div></li>';
       uniques(data, 'CompanySize').sort((a, b) => {
@@ -110,7 +110,7 @@
       });
     }
 
-    const fillCountrySelection = (data, loader) => {
+    const fillCountrySelection = (data) => {
       const container = document.getElementById("country-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Country\', \'country-dropdown\')"><div>All</div></li>';
       uniques(data, 'Country').sort((a, b) => {
@@ -120,7 +120,7 @@
       });
     }
 
-    const fillEmploymentSelection = (data, loader) => {
+    const fillEmploymentSelection = (data) => {
       const container = document.getElementById("employment-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Employment\', \'employment-dropdown\')"><div>All</div></li>';
       uniques(data, 'Employment').sort((a, b) => {
@@ -135,7 +135,7 @@
       title.innerText = 'Results of ' + value + ' software developers';
     }
 
-    const fillGenderSelection = (data, loader) => {
+    const fillGenderSelection = (data) => {
       const container = document.getElementById("gender-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Gender\', \'gender-dropdown\')"><div>All</div></li>';
       uniques(data, 'Gender').sort((a, b) => {
@@ -146,14 +146,13 @@
     }
 
     toggleSpinner();
-    const loader = new DataLoader(d3);
-    loader.loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv', loader.defaultMapper).then(function(data) {
+    loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv').then(function(data) {
       updateDashboardTitle(data.length);
-      fillJobTypeSelection(data, loader);
-      fillCompanySizeSelection(data, loader);
-      fillCountrySelection(data, loader);
-      fillEmploymentSelection(data, loader);
-      fillGenderSelection(data, loader);
+      fillJobTypeSelection(data);
+      fillCompanySizeSelection(data);
+      fillCountrySelection(data);
+      fillEmploymentSelection(data);
+      fillGenderSelection(data);
 
       filter = new Filter(data);
       filter.apply();
