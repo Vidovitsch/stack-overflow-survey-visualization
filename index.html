@@ -90,7 +90,7 @@
     }
 
     toggleSpinner();
-    loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv').then(function(data) {
+    loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv').then(data => {
       createSelectionMenu(data, 'dropdown-bar', {
         jobtype: 'DevType',
         companysize: 'CompanySize',
@@ -109,7 +109,11 @@
         width: 450,
         height: 550,
         margin: { top: 0, right: 60, bottom: 0, left: 120 },
-        padding: 0.1
+        padding: 0.1,
+        colors: ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
+          '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
+          '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
+          '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD']
       }
       const hbarData = sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
         return value / data.length;
