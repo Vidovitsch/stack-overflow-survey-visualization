@@ -59,6 +59,7 @@
           <ul id="gender-dropdown-menu" class="dropdown-menu"></ul>
         </div>
     </div>
+    <h2 id='dashboard-title'></h2>
   </div>
   </body>
   <script>
@@ -120,6 +121,11 @@
       });
     }
 
+    const updateDashboardTitle = (value) => {
+      const title = document.getElementById("dashboard-title");
+      title.innerText = 'Results of ' + value + ' software developers';
+    }
+
     const fillGenderSelection = (data, loader) => {
       const container = document.getElementById("gender-dropdown-menu");
       container.innerHTML += '<li onclick="onSelected(\'All\', \'Gender\', \'gender-dropdown\')"><div>All</div></li>';
@@ -131,6 +137,7 @@
     toggleSpinner();
     const loader = new DataLoader(d3);
     loader.loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv', loader.defaultMapper).then(function(data) {
+      updateDashboardTitle(data.length);
       fillJobTypeSelection(data, loader);
       fillCompanySizeSelection(data, loader);
       fillCountrySelection(data, loader);
@@ -138,6 +145,8 @@
       fillGenderSelection(data, loader);
 
       filter = new Filter(data);
+      filter.apply();
+
       const hbar = new Hbar(d3);
       const { ordinalData, total } = loader.toOrdinalData(data, 'LanguageWorkedWith');
       hbar.plot(ordinalData, {
@@ -150,6 +159,7 @@
 
       filter.onFilterApplied(data => {
         const { ordinalData, total } = loader.toOrdinalData(data, 'LanguageWorkedWith');
+        updateDashboardTitle(data.length);
         hbar.updateData(ordinalData);
       });
 

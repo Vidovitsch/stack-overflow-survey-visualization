@@ -4,10 +4,10 @@ const Hbar = function(d3) {
   this.xScale = {};
   this.yScale = {};
   this.yLabels = [];
-  this.colors = ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB', '#635BFB',
-    '#6B63FB', '#736CFC', '#7B74FC', '#827CFC', '#8A84FC',
-    '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD', '#B1ADFD',
-    '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD'];
+  this.colors = ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
+  '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
+  '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
+  '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD'];
 
   Hbar.prototype.plot = function(data, options) {
     const { width, height, margin, padding, container } = options;
