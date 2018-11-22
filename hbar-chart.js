@@ -68,7 +68,7 @@ const Hbar = function(d3) {
       .append('text')
         .attr("class", "label")
         .text((d) => {
-          return Math.round(d.value * 100);
+          return d.value > 0 ? Math.round(d.value * 1000) / 10 : '';
         })
         .attr('y', (d) => {
           return this.yScale(d.key) + this.yScale.bandwidth();
@@ -78,7 +78,7 @@ const Hbar = function(d3) {
       .transition()
       .duration(1500)
         .attr('x', (d) => {
-          return this.xScale(d.value) + 2;
+          return this.xScale(d.value) + 3;
         })
     // Show y-ax
     this.svg.append('g')
@@ -110,13 +110,13 @@ const Hbar = function(d3) {
       .data(this.yLabels)
       .attr("class", "label")
       .text(function(label) {
-        if (label in data_dict) return Math.round(data_dict[label] * 100);
+        if (label in data_dict) return Math.round(data_dict[label] * 1000) / 10;
         return '';
       })
       .transition()
       .duration(1500)
         .attr('x', (label) => {
-          if (label in data_dict) return this.xScale(data_dict[label]) + 2;
+          if (label in data_dict) return this.xScale(data_dict[label]) + 3;
           return 2;
         })
   }
