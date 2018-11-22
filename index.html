@@ -35,20 +35,20 @@
       <h3 id="dashboard-title"></h3>
       <div id="dashboard">
         <div class="row">
-          <div id="hbar-chart-container" class="col-lg-4" style="background-color:yellow;">
-            
+          <div class="col-lg-4">
+            <div class="card">
+              <div id="hbar-chart-container" class="card-body"></div>
+            </div>
           </div>
-          <div class="col-lg-8" style="background-color:pink;">
-            <div id="hist-chart-container" class="row"><p>Lorem ipsum...</p></div>
+          <div class="col-lg-8">
+            <div id="hist-chart-container" class="row">
+            </div>
             <div class="row">
-              <div class="col-lg-4" style="background-color:blue;">
-                <p>Lorem ipsum...</p>
+              <div class="col-lg-4">
               </div>
-              <div class="col-lg-4" style="background-color:purple;">
-                <p>Lorem ipsum...</p>
+              <div class="col-lg-4">
               </div>
-              <div class="col-lg-4" style="background-color:blue;">
-                <p>Lorem ipsum...</p>
+              <div class="col-lg-4">
               </div>
             </div>
           </div>
@@ -127,10 +127,11 @@
       const hbar = new Hbar(d3);
       const hbarOptions = {
         container: '#hbar-chart-container',
-        width: 450,
+        width: 350,
         height: 550,
-        margin: { top: 0, right: 60, bottom: 0, left: 120 },
+        margin: { top: 0, right: 60, bottom: 0, left: 80 },
         padding: 0.1,
+        maxLabels: 30,
         colors: ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
           '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
           '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',

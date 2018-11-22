@@ -21,6 +21,9 @@ const Hbar = function(d3) {
       '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
       '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
       '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD'];
+    const maxLabels = options.maxLabels || data.length;
+    data = data.splice(Math.abs(maxLabels - data.length));
+
     // Set scale of y-ax
     this.yScale = this.d3.scaleBand()
       .range([this.height, 0])
