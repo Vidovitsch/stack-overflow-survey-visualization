@@ -20,50 +20,53 @@ const Hist = function(d3) {
     this.bins = options.bins || 25;
     this.container = options.container || 'body';
 
+    this.width = this.width - this.margin.left - this.margin.right,
+    this.height = this.height - this.margin.top - this.margin.bottom;
+
     // set the ranges
-    var x = this.d3.scaleLinear()
+    const xScale = this.d3.scaleLinear()
               .domain([this.min, this.max])
               .rangeRound([0, this.width]);
-    var y = this.d3.scaleLinear()
+    const yScale = this.d3.scaleLinear()
               .range([this.height, 0]);
+
     // set the parameters for the histogram
-    var histogram = this.d3.histogram()
-        .value(function(d) {
-          return d; })
-        .domain(x.domain())
-        .thresholds(x.ticks(this.bins));
+    const histogram = this.d3.histogram()
+        .value(d => { return d; })
+        .domain(xScale.domain())
+        .thresholds(xScale.ticks(this.bins));
 
     // append the svg object to the body of the page
     // append a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
-    var svg = this.d3.select(this.container).append("svg")
+    this.svg = this.d3.select(this.container)
+      .append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
-        .attr("transform",
-              "translate(" + this.margin.left + "," + this.margin.top + ")");
+        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     // group the data for the bars
-    var bins = histogram(data);
+    const bins = histogram(data);
     // Scale the range of the data in the y domain
-    y.domain([0, this.d3.max(bins, function(d) { return d.length; })]);
+    yScale.domain([0, this.d3.max(bins, function(d) { return d.length; })]);
     // append the bar rectangles to the svg element
-    svg.selectAll("rect")
+    this.svg.selectAll("rect")
         .data(bins)
-      .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", 1)
-        .attr("transform", function(d) {
-  		  return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-        .attr("height", (d) => { return this.height - y(d.length); });
+        .enter()
+        .append("rect")
+          .attr("class", "bar")
+          .attr("x", 1)
+          .attr("transform", function(d) { return "translate(" + xScale(d.x0) + "," + yScale(d.length) + ")"; })
+          .attr("width", function(d) { return xScale(d.x1) - xScale(d.x0) -1 ; })
+          .attr("height", (d) => { return this.height - yScale(d.length); });
     // add the x Axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-        .call(this.d3.axisBottom(x));
+        .call(this.d3.axisBottom(xScale));
 
     // add the y Axis
-    svg.append("g")
-        .call(this.d3.axisLeft(y));
+    this.svg.append("g")
+        .call(this.d3.axisLeft(yScale));
   };
 
   Hist.prototype.updateData = function(data) {
