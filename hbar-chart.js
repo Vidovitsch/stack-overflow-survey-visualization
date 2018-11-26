@@ -122,5 +122,5 @@ const Hbar = function(d3) {
           if (label in data_dict) return this.xScale(data_dict[label]) + 3;
           return 2;
         })
-  }
+  };
 }

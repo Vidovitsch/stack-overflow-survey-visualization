@@ -83,3 +83,9 @@ header {
   height: 575px;
   padding: 10px 5px 10px 5px;
 }
+
+#hist-chart-container {
+  height: 250px;
+  width: 500px;
+  padding: 10px 5px 10px 5px;
+}
