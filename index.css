@@ -79,6 +79,10 @@ header {
   text-align: center;
 }
 
+#hist-info {
+  text-align: center;
+}
+
 #hbar-chart-container {
   height: 575px;
   padding: 10px 5px 10px 5px;

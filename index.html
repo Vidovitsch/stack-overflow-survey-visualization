@@ -45,6 +45,7 @@
             <div class="row">
               <div class="card">
                 <div id="hist-chart-container" class="card-body"></div>
+                <h5 id="hist-info"></h5>
               </div>
             </div>
             <div class="row">
@@ -102,6 +103,11 @@
       title.innerText = 'Results of ' + value + ' software developers';
     }
 
+    const updateAvgSalary = (value) => {
+      const info = document.getElementById("hist-info");
+      info.innerText = 'Average salary: $' + Math.round(value);
+    }
+
     const toggleSpinner = (on_load_id='circle', load_done_id='container') => {
        const spinner = document.getElementById(on_load_id);
        const content = document.getElementById(load_done_id);
@@ -150,13 +156,15 @@
       const hist = new Hist(d3);
       const histOptions = {
         container: '#hist-chart-container',
-        width: 750,
+        width: 950,
         height: 225,
         margin: { top: 20, right: 30, bottom: 20, left: 40 },
         padding: 0.1,
-        bins: 20
+        bins: 25
       }
-      const histData = values(data, 'ConvertedSalary');
+      let histData = values(data, 'ConvertedSalary');
+      updateAvgSalary(avg(histData));
+      histData = chauvenet(histData, 20);
       hist.plot(histData, histOptions);
 
       filter.onFilterApplied(data => {
@@ -164,7 +172,9 @@
         hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
           return value / data.length;
         }), true));
-        hist.updateData(values(data, 'ConvertedSalary'));
+        const histValues = values(data, 'ConvertedSalary');
+        updateAvgSalary(avg(histValues));
+        hist.updateData(histValues);
       });
       toggleSpinner();
     });

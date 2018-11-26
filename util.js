@@ -37,6 +37,38 @@ const values = function(data, col, _scaler) {
   }, []);
 }
 
+const avg = function(data) {
+  return data.reduce((acc, value) => { return acc + value }, 0) / data.length;
+}
+
+const variance = function(data) {
+  var n = data.length;
+  if (n < 1) return NaN;
+  if (n === 1) return 0;
+  const mean = avg(data);
+  let i = -1;
+  let s = 0;
+  while (++i < n) {
+    const v = data[i] - mean;
+    s += v * v;
+  }
+  return s / (n - 1);
+};
+
+const chauvenet = function(data, dMax) {
+    const mean = avg(data);
+    const std = Math.sqrt(variance(data));
+    let counter = 0;
+    let temp = [];
+    for (var i = 0; i < data.length; i++) {
+        if (dMax > (Math.abs(data[i] - mean)) / std) {
+            temp[counter] = data[i];
+            counter = counter + 1;
+        }
+    };
+    return temp
+}
+
 /**
  * Sort groups on their value on ascending or descending order.
  *
