@@ -164,6 +164,7 @@
         hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
           return value / data.length;
         }), true));
+        hist.updateData(values(data, 'ConvertedSalary'));
       });
       toggleSpinner();
     });

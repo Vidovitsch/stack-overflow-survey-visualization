@@ -8,7 +8,9 @@ const Hist = function(d3) {
   this.max = 0;
   this.bins = 0;
   this.svg = {};
-
+  this.yScale = {};
+  this.xScale = {};
+  this.histogram = {};
 
   Hist.prototype.plot = function(data, options) {
     this.margin = options.margin || {top: 10, right: 30, bottom: 30, left: 40};
@@ -21,21 +23,21 @@ const Hist = function(d3) {
     this.container = options.container || 'body';
 
     // Set scale of y-ax
-    const yScale = this.d3.scaleLinear()
+    this.yScale = this.d3.scaleLinear()
               .range([this.height, 0]);
     // Set scale of x-ax
-    const xScale = this.d3.scaleLinear()
+    this.xScale = this.d3.scaleLinear()
               .domain([this.min, this.max])
               .rangeRound([0, this.width]);
     // Set the parameters for the histogram
-    const histogram = this.d3.histogram()
+    this.histogram = this.d3.histogram()
         .value(d => { return d; })
-        .domain(xScale.domain())
-        .thresholds(xScale.ticks(this.bins));
+        .domain(this.xScale.domain())
+        .thresholds(this.xScale.ticks(this.bins));
     // Group the data for the bars
-    const bins = histogram(data);
+    const bins = this.histogram(data);
     // Scale the range of the data in the y domain
-    yScale.domain([0, this.d3.max(bins, (d) => { return d.length; })]);
+    this.yScale.domain([0, this.d3.max(bins, (d) => { return d.length; })]);
     // Create SVG
     this.svg = this.d3.select(this.container)
       .append("svg")
@@ -48,26 +50,58 @@ const Hist = function(d3) {
         .data(bins)
         .enter()
         .append("rect")
-          .attr("x", d => xScale(d.x0) + 1)
-          .attr("width", d => Math.max(0, xScale(d.x1) - xScale(d.x0) - 1))
+          .attr("x", d => this.xScale(d.x0) + 1)
+          .attr("width", d => Math.max(0, this.xScale(d.x1) - this.xScale(d.x0) - 1))
           .attr("y", this.height)
           .attr("height", 0);
     // Add animation to bars
     this.svg.selectAll('rect')
       .transition()
       .duration(1500)
-        .attr("y", d => yScale(d.length))
-        .attr("height", d => yScale(0) - yScale(d.length));
+        .attr("y", d => this.yScale(d.length))
+        .attr("height", d => this.yScale(0) - this.yScale(d.length));
+    // Add text to bars
+    this.svg.selectAll('text')
+      .data(bins)
+      .enter()
+      .append('text')
+        .attr("class", "label")
+        .attr("text-anchor", "middle")
+        .text((d) => {
+          return d.length;
+        })
+        .attr('x', (d) => {
+          return (this.xScale(d.x0) + this.xScale(d.x1)) / 2;
+        })
+        .attr("y", this.height - 3);
+    // Add animation to text
+    this.svg.selectAll('text')
+      .transition()
+      .duration(1500)
+        .attr("y", d => this.yScale(d.length) - 3);
     // Show x-ax
     this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-        .call(this.d3.axisBottom(xScale));
-    // Show y-ax
-    this.svg.append("g")
-        .call(this.d3.axisLeft(yScale));
+        .call(this.d3.axisBottom(this.xScale));
   };
 
   Hist.prototype.updateData = function(data) {
-
+    const bins = this.histogram(data);
+    this.svg.selectAll('rect')
+      .data(bins)
+      .transition()
+      .duration(1500)
+      .attr("y", d => this.yScale(d.length))
+      .attr("height", d => this.yScale(0) - this.yScale(d.length));
+    // Update position and value of text after bars
+    this.svg.selectAll('text')
+      .data(bins)
+      .attr("class", "label")
+      .text((d) => {
+        return d.length;
+      })
+      .transition()
+      .duration(1500)
+        .attr("y", d => this.yScale(d.length) - 3);
   };
 }
