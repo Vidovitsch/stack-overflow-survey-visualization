@@ -27,6 +27,16 @@ const groupBy = function(data, col, _scaler) {
   }, []);
 }
 
+const values = function(data, col, _scaler) {
+  return data.reduce((values, row) => {
+    if (col in row) {
+      const value = _scaler ? _scaler(row[col]) : row[col];
+      values.push(value);
+      return values;
+    }
+  }, []);
+}
+
 /**
  * Sort groups on their value on ascending or descending order.
  *

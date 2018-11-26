@@ -146,6 +146,18 @@
       }), true);
       hbar.plot(hbarData, hbarOptions);
 
+      // Plot histogram
+      const hist = new Hist(d3);
+      const histOptions = {
+        container: '#hist-chart-container',
+        width: 750,
+        height: 225,
+        margin: { top: 0, right: 60, bottom: 0, left: 80 },
+        padding: 0.1,
+      }
+      const histData = values(data, 'ConvertedSalary');
+      hist.plot(histData, histOptions);
+
       filter.onFilterApplied(data => {
         updateDashboardTitle(data.length);
         hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {

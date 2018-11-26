@@ -1,8 +1,6 @@
 const Hbar = function(d3) {
   this.d3 = d3;
   this.svg = {};
-  this.xScale = {};
-  this.yScale = {};
   this.yLabels = [];
   this.width = 0;
   this.height = 0;
@@ -25,16 +23,16 @@ const Hbar = function(d3) {
     data = data.splice(Math.abs(maxLabels - data.length));
 
     // Set scale of y-ax
-    this.yScale = this.d3.scaleBand()
+    const yScale = this.d3.scaleBand()
       .range([this.height, 0])
       .padding(this.padding);
     // Set scale of x-ax
-    this.xScale = this.d3.scaleLinear()
+    const xScale = this.d3.scaleLinear()
       .range([0, this.width]);
     // Fit linear data points on x-ax
-    this.xScale.domain([0, 1]);
+    xScale.domain([0, 1]);
     // Fit ordinal data points on y-ax
-    this.yScale.domain(data.map(function(d) {
+    yScale.domain(data.map(function(d) {
       return d.key;
     }));
     // Create SVG
@@ -53,14 +51,14 @@ const Hbar = function(d3) {
         .attr('width', 0)
         .attr('y', (d) => {
           this.yLabels.push(d.key); // Keeps track of original index of labels.
-          return this.yScale(d.key);
+          return yScale(d.key);
         })
-        .attr('height', this.yScale.bandwidth())
+        .attr('height', yScale.bandwidth())
     // Add animation to bars
     this.svg.selectAll('rect')
       .transition()
       .duration(1500)
-        .attr('width', (d) => {return this.xScale(d.value);})
+        .attr('width', (d) => {return xScale(d.value);})
         .attr('fill', (d) => {
           return this.colors[Math.abs(Math.round(d.value * this.colors.length) - (this.colors.length - 1))];
         });
@@ -74,18 +72,18 @@ const Hbar = function(d3) {
           return d.value > 0 ? Math.round(d.value * 1000) / 10 : '';
         })
         .attr('y', (d) => {
-          return this.yScale(d.key) + this.yScale.bandwidth();
+          return yScale(d.key) + yScale.bandwidth();
         })
     // Add animation to text
     this.svg.selectAll('text')
       .transition()
       .duration(1500)
         .attr('x', (d) => {
-          return this.xScale(d.value) + 3;
+          return xScale(d.value) + 3;
         })
     // Show y-ax
     this.svg.append('g')
-      .call(d3.axisLeft(this.yScale));
+      .call(d3.axisLeft(yScale));
   };
 
   Hbar.prototype.updateData = function(data) {
@@ -101,8 +99,8 @@ const Hbar = function(d3) {
       .transition()
       .duration(1500)
       .attr('width', (label) => {
-        if (label in data_dict) return this.xScale(data_dict[label]);
-        return this.xScale(0);
+        if (label in data_dict) return xScale(data_dict[label]);
+        return xScale(0);
       })
       .attr('fill', (label) => {
         if (label in data_dict) return this.colors[Math.abs(Math.round(data_dict[label] * this.colors.length) - (this.colors.length - 1))];
@@ -119,7 +117,7 @@ const Hbar = function(d3) {
       .transition()
       .duration(1500)
         .attr('x', (label) => {
-          if (label in data_dict) return this.xScale(data_dict[label]) + 3;
+          if (label in data_dict) return xScale(data_dict[label]) + 3;
           return 2;
         })
   };
