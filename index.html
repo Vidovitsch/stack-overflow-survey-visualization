@@ -169,12 +169,13 @@
         height: 225,
         margin: { top: 20, right: 30, bottom: 20, left: 40 },
         padding: 0.1,
-        bins: 20
+        bins: 20,
+        max: 200000,
+        min: 0
       }
 
       let histData = values(data, 'ConvertedSalary');
       updateAvgSalary(avg(histData));
-      histData = chauvenet(histData, 20);
       hist.plot(histData, histOptions);
 
       filter.onFilterApplied(data => {

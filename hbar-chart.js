@@ -22,7 +22,7 @@ const Hbar = function(d3) {
       '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
       '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD'];
 
-    const maxLabels = options.maxLabels || data.length;
+    const maxLabels = options.maxBars || data.length;
     data = data.splice(Math.abs(maxLabels - data.length));
 
     // Set scale of y-ax
@@ -63,7 +63,6 @@ const Hbar = function(d3) {
       .duration(1500)
         .attr('width', (d) => {return this.xScale(d.value);})
         .attr('fill', (d) => {
-          console.log(Math.abs(Math.round(d.value * this.colors.length) - (this.colors.length - 1)))
           return this.colors[Math.abs(Math.round(d.value * this.colors.length) - (this.colors.length - 1))];
         });
     // Add text to bars
