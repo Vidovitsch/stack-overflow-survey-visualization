@@ -49,17 +49,12 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-lg-4">
-                <div class="card">
-                  <div id="exercise-chart-container" class="card-body"></div>
-                </div>
-              </div>
-              <div class="col-lg-4">
+              <div class="col-lg-6">
                 <div class="card">
                   <div id="day-chart-container" class="card-body"></div>
                 </div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-6">
                 <div class="card">
                   <div id="satisfaction-chart-container" class="card-body"></div>
                 </div>
@@ -178,6 +173,27 @@
       updateAvgSalary(avg(histData));
       hist.plot(histData, histOptions);
 
+      // Plot satisfaction
+      const hbar2 = new Hbar(d3);
+      const hbar2Options = {
+        container: '#satisfaction-chart-container',
+        width: 350,
+        height: 225,
+        margin: { top: 0, right: 60, bottom: 0, left: 175 },
+        padding: 0.1,
+        maxLabels: 30,
+        colors: ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
+          '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
+          '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
+          '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD']
+      }
+      const hbar2Data = sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => {
+        return value / data.length;
+      }));
+
+      hbar2.plot(hbar2Data, hbar2Options);
+
+
       filter.onFilterApplied(data => {
         updateDashboardTitle(data.length);
         hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
@@ -186,6 +202,9 @@
         const histValues = values(data, 'ConvertedSalary');
         updateAvgSalary(avg(histValues));
         hist.updateData(histValues);
+        hbar2.updateData(sortGroups(groupBy(data, 'JobSatisfaction', (value) => {
+          return value / data.length;
+        }), true))
       });
       toggleSpinner();
     });

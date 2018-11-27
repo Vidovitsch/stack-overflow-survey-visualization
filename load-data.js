@@ -72,6 +72,21 @@ const exercise_to_number = (value) => {
   }
 }
 
+const sortJobSatisfaction = (data) => {
+  const mappings = {
+    'Extremely satisfied': 0,
+    'Moderately satisfied': 1,
+    'Slightly satisfied': 2,
+    'Neither satisfied nor dissatisfied': 3,
+    'Slightly dissatisfied': 4,
+    'Moderately dissatisfied': 5,
+    'Extremely dissatisfied': 6
+  };
+  return data.sort((a, b) => {
+    return mappings[b.key] - mappings[a.key];
+  });
+};
+
 /**
  * Converts the different categories of computer time to numbers.
  * @param  {String} value String value
