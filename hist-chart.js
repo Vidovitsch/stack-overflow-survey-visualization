@@ -68,8 +68,8 @@ const Hist = function(d3) {
           return this.yScale(0) - this.yScale(Math.round(d.length / data.length * 1000) / 10);
         })
         .attr('fill', (d) => {
-          const value = Math.round(d.length / data.length);
-          return this.colors[Math.abs(value * this.colors.length - (this.colors.length - 1))];
+          if (d.length == 0) return '#FFFFFF';
+          return this.colors[Math.abs(Math.round(d.length / data.length * this.colors.length) - (this.colors.length - 1))];
         });
     // Add text to bars
     this.svg.selectAll('text')
@@ -79,7 +79,9 @@ const Hist = function(d3) {
         .attr("class", "label")
         .attr("text-anchor", "middle")
         .text((d) => {
-          return Math.round(d.length / data.length * 1000) / 10;
+          const value = Math.round(d.length / data.length * 1000) / 10;
+          if (value == 0) return '';
+          return value;
         })
         .attr('x', (d) => {
           return (this.xScale(d.x0) + this.xScale(d.x1)) / 2;
@@ -105,15 +107,17 @@ const Hist = function(d3) {
       .attr("y", d => this.yScale(Math.round(d.length / data.length * 1000) / 10))
       .attr("height", d => this.yScale(0) - this.yScale(Math.round(d.length / data.length * 1000) / 10))
       .attr('fill', (d) => {
-        const value = Math.round(d.length / data.length);
-        return this.colors[Math.abs(value * this.colors.length - (this.colors.length - 1))];
+        if (d.length == 0) return '#FFFFFF';
+        return this.colors[Math.abs(Math.round(d.length / data.length * this.colors.length) - (this.colors.length - 1))];
       });
     // Update position and value of text after bars
     this.svg.selectAll('text')
       .data(bins)
       .attr("class", "label")
       .text((d) => {
-        return Math.round(d.length / data.length * 1000) / 10;
+        const value = Math.round(d.length / data.length * 1000) / 10;
+        if (value == 0) return '';
+        return value;
       })
       .transition()
       .duration(1500)

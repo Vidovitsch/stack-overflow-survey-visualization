@@ -63,6 +63,7 @@ const Hbar = function(d3) {
       .duration(1500)
         .attr('width', (d) => {return this.xScale(d.value);})
         .attr('fill', (d) => {
+          console.log(Math.abs(Math.round(d.value * this.colors.length) - (this.colors.length - 1)))
           return this.colors[Math.abs(Math.round(d.value * this.colors.length) - (this.colors.length - 1))];
         });
     // Add text to bars
