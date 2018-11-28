@@ -67,8 +67,6 @@
     </div>
   </body>
   <script>
-    let filter = {};
-
     const createSelectionMenu = (data, containerId, dropdowns) => {
       const container = document.getElementById(containerId);
       Object.keys(dropdowns).forEach((key) => {
@@ -125,8 +123,28 @@
        }
     }
 
+    const plotPopularLanguages = (data, container) => {
+      const elem = document.getElementById(container.substring(1));
+      elem.innerHTML += '<h5>Usage of programming languages</h5>';
+      let groupedData = sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => value / data.length));
+      const hbar = new Hbar({
+        width: 350,
+        height: 520,
+        margin: { top: 0, right: 60, bottom: 0, left: 80 },
+        padding: 0.1,
+        limit: 30,
+        fontSize: '1em',
+        labelAnchor: 1.2
+      });
+      hbar.plot(groupedData, container);
+      // On data update
+      filter.onFilterApplied(data => {
+        hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => value / data.length)));
+      });
+    }
+
     toggleSpinner();
-    loadData(d3, './dataset/2018 Stack Overflow Survey Results_prepped.csv').then(data => {
+    loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv').then(data => {
       createSelectionMenu(data, 'dropdown-bar', {
         jobtype: 'DevType',
         companysize: 'CompanySize',
@@ -138,24 +156,7 @@
       filter = new Filter(data);
       filter.apply();
 
-      // Plot horizontal bar chart
-      const hbar = new Hbar(d3);
-      const hbarOptions = {
-        container: '#hbar-chart-container',
-        width: 350,
-        height: 550,
-        margin: { top: 0, right: 60, bottom: 0, left: 80 },
-        padding: 0.1,
-        maxLabels: 30,
-        colors: ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
-          '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
-          '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
-          '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD']
-      }
-      const hbarData = sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
-        return value / data.length;
-      }), true);
-      hbar.plot(hbarData, hbarOptions);
+      plotPopularLanguages(data, '#hbar-chart-container');
 
       // Plot histogram
       const hist = new Hist(d3);
@@ -175,23 +176,22 @@
       hist.plot(histData, histOptions);
 
       // Plot satisfaction
-      const hbar2 = new Hbar(d3);
       const hbar2Options = {
-        container: '#satisfaction-chart-container',
         width: 250,
         height: 225,
         margin: { top: 0, right: 60, bottom: 0, left: 175 },
         padding: 0.1,
-        maxLabels: 30,
+        limit: 30,
         colors: ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
           '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
           '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
           '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD']
       }
+      const hbar2 = new Hbar(hbar2Options);
       const hbar2Data = sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => {
         return value / data.length;
       }));
-      hbar2.plot(hbar2Data, hbar2Options);
+      hbar2.plot(hbar2Data, '#satisfaction-chart-container');
 
       // Plot donut chart
       const donut = new Donut();
@@ -212,21 +212,21 @@
 
       filter.onFilterApplied(data => {
         updateDashboardTitle(data.length);
-        hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
-          return value / data.length;
-        }), true));
-        const histValues = values(data, 'ConvertedSalary');
-        updateAvgSalary(avg(histValues));
-        hist.updateData(histValues);
-        hbar2.updateData(sortGroups(groupBy(data, 'JobSatisfaction', (value) => {
-          return value / data.length;
-        }), true))
-        const avgComputerHours = avg(values(data, 'HoursComputer'));
-        const avgOutsideHours = avg(values(data, 'HoursOutside'));
-        const donutData = [{ key: 'computer time', value: avgComputerHours / 24, color: '#3D33FB'},
-                           { key: 'outside time', value: avgOutsideHours / 24, color: '#635BFB' },
-                           { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
-        donut.updateData(donutData);
+        // hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
+        //   return value / data.length;
+        // }), true));
+        // const histValues = values(data, 'ConvertedSalary');
+        // updateAvgSalary(avg(histValues));
+        // hist.updateData(histValues);
+        // hbar2.updateData(sortGroups(groupBy(data, 'JobSatisfaction', (value) => {
+        //   return value / data.length;
+        // }), true))
+        // const avgComputerHours = avg(values(data, 'HoursComputer'));
+        // const avgOutsideHours = avg(values(data, 'HoursOutside'));
+        // const donutData = [{ key: 'computer time', value: avgComputerHours / 24, color: '#3D33FB'},
+        //                    { key: 'outside time', value: avgOutsideHours / 24, color: '#635BFB' },
+        //                    { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
+        // donut.plot(donutData, donutOptions);
       });
       toggleSpinner();
     });

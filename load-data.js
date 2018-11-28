@@ -7,7 +7,7 @@
  *                                                to other data (e.g. string -> numeric)
  * @return {Array}                             Array of dataset rows
  */
-const loadData = (d3, filePath, data_mapper=defaultMapper) => {
+const loadData = (filePath, data_mapper=defaultMapper) => {
   return new Promise((resolve, reject) => {
     d3.csv(filePath).then((data) => {
       resolve(data_mapper(data));

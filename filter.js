@@ -1,3 +1,5 @@
+let filter = {};
+
 const Filter = function(data) {
   this.data = data;
   this.filter = {};
