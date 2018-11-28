@@ -18,6 +18,7 @@
     <script type="text/javascript" src="filter.js"></script>
     <script type="text/javascript" src="hbar-chart.js"></script>
     <script type="text/javascript" src="hist-chart.js"></script>
+    <script type="text/javascript" src="donut-chart.js"></script>
     <script type="text/javascript" src="util.js"></script>
   </head>
   <body>
@@ -177,7 +178,7 @@
       const hbar2 = new Hbar(d3);
       const hbar2Options = {
         container: '#satisfaction-chart-container',
-        width: 350,
+        width: 250,
         height: 225,
         margin: { top: 0, right: 60, bottom: 0, left: 175 },
         padding: 0.1,
@@ -190,9 +191,24 @@
       const hbar2Data = sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => {
         return value / data.length;
       }));
-
       hbar2.plot(hbar2Data, hbar2Options);
 
+      // Plot donut chart
+      const donut = new Donut();
+      const avgComputerHours = avg(values(data, 'HoursComputer'));
+      const avgOutsideHours = avg(values(data, 'HoursOutside'));
+      const donutData = [{ key: 'computer time', value: avgComputerHours / 24, color: '#3D33FB'},
+                         { key: 'outside time', value: avgOutsideHours / 24, color: '#635BFB' },
+                         { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
+     const donutOptions = {
+       container: '#day-chart-container',
+       width: 250,
+       height: 250,
+       margin: { top: 0, right: 0, bottom: 0, left: 0 },
+       padding: 0.1,
+       radius: 100
+     }
+     donut.plot(donutData, donutOptions);
 
       filter.onFilterApplied(data => {
         updateDashboardTitle(data.length);
@@ -205,6 +221,12 @@
         hbar2.updateData(sortGroups(groupBy(data, 'JobSatisfaction', (value) => {
           return value / data.length;
         }), true))
+        const avgComputerHours = avg(values(data, 'HoursComputer'));
+        const avgOutsideHours = avg(values(data, 'HoursOutside'));
+        const donutData = [{ key: 'computer time', value: avgComputerHours / 24, color: '#3D33FB'},
+                           { key: 'outside time', value: avgOutsideHours / 24, color: '#635BFB' },
+                           { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
+        donut.updateData(donutData);
       });
       toggleSpinner();
     });
