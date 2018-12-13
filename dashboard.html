@@ -22,17 +22,72 @@
     <script type="text/javascript" src="util.js"></script>
   </head>
   <body>
-    <header></header>
-    <div id="circle">
-      <div class="loader">
-        <div class="loader">
-          <div class="loader">
-            <div class="loader"></div>
+    <header>
+      <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard.html">Dashboard</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div id="loader-circle">
+      <div class="loader-bar">
+        <div class="loader-bar">
+          <div class="loader-bar">
+            <div class="loader-bar"></div>
           </div>
         </div>
       </div>
     </div>
-    <div id="container">
+    <div id="wrapper">
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+            <span>Your dreamjob</span>
+          </li>
+          <li class='sidebar-selection'>
+            <span href="#">Developer Type:</span>
+            <button id="devtype-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">All
+            <span class="caret"></span></button>
+            <ul id="devtype-dropdown-menu" class="dropdown-menu"></ul>
+          </li>
+          <li class='sidebar-selection'>
+            <span href="#">Company Size:</span>
+            <button id="compsize-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">All
+            <span class="caret"></span></button>
+            <ul id="compsize-dropdown-menu" class="dropdown-menu"></ul>
+          </li>
+          <li class='sidebar-selection'>
+            <span href="#">Country:</span>
+            <button id="country-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">All
+            <span class="caret"></span></button>
+            <ul id="country-dropdown-menu" class="dropdown-menu"></ul>
+          </li>
+          <li class='sidebar-selection'>
+            <span href="#">Employment:</span>
+            <button id="employment-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">All
+            <span class="caret"></span></button>
+            <ul id="employment-dropdown-menu" class="dropdown-menu"></ul>
+          </li>
+          <li class='sidebar-selection'>
+            <span href="#">Gender:</span>
+            <button id="gender-dropdown" class="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown">All
+            <span class="caret"></span></button>
+            <ul id="gender-dropdown-menu" class="dropdown-menu"></ul>
+          </li>
+         </ul>
+       </div>
+       <!-- Page Content -->
+       <div id="page-content-wrapper">
+
+       </div>
+       <!-- /#page-content-wrapper -->
+    </div>
+      <!--
       <div id="dropdown-bar" class="dropdown-bar"></div>
       <h3 id="dashboard-title"></h3>
       <div id="dashboard">
@@ -64,33 +119,22 @@
           </div>
         </div>
       </div>
-    </div>
+
+    </div>  -->
   </body>
   <script>
-    const createSelectionMenu = (data, containerId, dropdowns) => {
-      const container = document.getElementById(containerId);
-      Object.keys(dropdowns).forEach((key) => {
-        // Create button with dropdown menu
-        container.innerHTML +=
-          '<div class="dropdown">' +
-            '<button id="' + key + '-dropdown" class="btn dropdown-toggle btn-primary" type="button" ' +
-              'data-toggle="dropdown">' + dropdowns[key] +
-            '<span class="caret"></span></button>' +
-            '<ul  id="' + key + '-dropdown-menu" class="dropdown-menu"></ul>' +
-          '</div>';
-        // Fill dropdown menu
-        const menu = document.getElementById(key + '-dropdown-menu');
-        menu.innerHTML += '<li onclick="onSelected(\'All\', \'' + dropdowns[key] + '\', \'' + key + '-dropdown\')"><div>All</div></li>';
-        uniques(data, dropdowns[key]).sort((a, b) => {
-          return a.localeCompare(b);
-        }).forEach((value) => {
-          menu.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'' + dropdowns[key] + '\', \'' + key + '-dropdown\')"><div>' + value + '</div></li>';
-        });
+    const fillSelectionMenus = (menuMappings) => {
+      Object.keys(menuMappings).forEach((key) => {
+        const selectionMenu = document.getElementById(key);
+        selectionMenu.innerHTML += '<li onclick="onSelected(\'All\', \'' + menuMappings[key]['column'] + '\', \'' + key + '\')"><div>All</div></li>';
+        menuMappings[key]['data'].forEach((value) => {
+          selectionMenu.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'' + menuMappings[key]['column'] + '\', \'' + key + '\')"><div>' + value + '</div></li>';
+        })
       });
     };
 
     const onSelected = (selectedValue, subject, dropdownId) => {
-      document.getElementById(dropdownId).innerText = selectedValue;
+      document.getElementById(dropdownId.split('-').slice(0, 2).join('-')).innerText = selectedValue;
       if (selectedValue == 'All') {
         filter.remove(subject);
       } else {
@@ -111,7 +155,7 @@
       info.innerText = 'Average salary: $' + Math.round(value);
     }
 
-    const toggleSpinner = (on_load_id='circle', load_done_id='container') => {
+    const toggleSpinner = (on_load_id='loader-circle', load_done_id='wrapper') => {
        const spinner = document.getElementById(on_load_id);
        const content = document.getElementById(load_done_id);
        if (spinner.style.display == 'block' && content.style.display == 'none') {
@@ -164,6 +208,31 @@
 
     toggleSpinner();
     loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv').then(data => {
+      toggleSpinner();
+      const sortAscFunc = (a, b) => a.localeCompare(b);
+      fillSelectionMenus({
+        'devtype-dropdown-menu': {
+          data: uniques(data, 'DevType').sort(sortAscFunc),
+          column: 'DevType'
+        },
+        'compsize-dropdown-menu': {
+          data: uniques(data, 'CompanySize').sort(sortAscFunc),
+          column: 'CompanySize'
+        },
+        'country-dropdown-menu': {
+          data: uniques(data, 'Country').sort(sortAscFunc),
+          column: 'Country'
+        },
+        'employment-dropdown-menu': {
+          data: uniques(data, 'Employment').sort(sortAscFunc),
+          column: 'Employment'
+        },
+        'gender-dropdown-menu': {
+          data: uniques(data, 'Gender').sort(sortAscFunc),
+          column: 'Gender'
+        },
+      })
+      /**
       createSelectionMenu(data, 'dropdown-bar', {
         jobtype: 'DevType',
         companysize: 'CompanySize',
@@ -229,7 +298,12 @@
         //                    { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
         // donut.plot(donutData, donutOptions);
       });
-      toggleSpinner();
+          **/
     });
+    <!-- Menu Toggle Script -->
+     $("#menu-toggle").click(function(e) {
+         e.preventDefault();
+         $("#wrapper").toggleClass("toggled");
+     });
   </script>
 </html>
