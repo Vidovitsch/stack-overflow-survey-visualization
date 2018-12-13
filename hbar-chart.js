@@ -25,6 +25,7 @@ const Hbar = function(options) {
   const H = Hbar.prototype;
 
   H.plot = function(data, container='body') {
+    console.log(data)
     // Set limit on the amount of bars in the chart
     // Bars will be trimmed from the bottom up
     this.data = this.limit ? data.slice(Math.abs(this.limit - data.length)) : data;
@@ -67,7 +68,7 @@ const Hbar = function(options) {
       .append('text')
         .attr("class", "label")
         .text((d) => {
-          return d.value > 0.0 ? Math.round(d.value * 1000) / 10 + '%': '';
+          return d.value > 0.0 ? Math.round(d.value * 1000) / 10 : '';
         })
         .attr('y', (d) => {
           return this.yScale(d.key) + this.yScale.bandwidth() / this.labelAnchor;
@@ -114,7 +115,7 @@ const Hbar = function(options) {
       .data(this.data)
       .text(function(d) {
         if (!(d.key in newData)) return '';
-        return Math.round(newData[d.key] * 1000) / 10 + '%';
+        return Math.round(newData[d.key] * 1000) / 10;
       })
       .transition()
       .duration(1500)

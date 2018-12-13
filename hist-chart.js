@@ -136,8 +136,4 @@ const Hist = function(d3) {
       .duration(1500)
         .attr("y", (d, i) => this.yScale(percentages[i]) - 3);
   };
-
-  Hist.prototype.rescale = function(data, min, max) {
-
-  };
 }

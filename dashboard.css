@@ -1,0 +1,95 @@
+header {
+  width: 100%;
+  height: 75px;
+  z-index: 999;
+  overflow: hidden;
+  background-color: #3D73FB;
+}
+
+#circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  display: none;
+	width: 150px;
+  height: 150px;
+}
+
+.loader {
+  width: calc(100% - 0px);
+	height: calc(100% - 0px);
+	border: 8px solid #FFFFFF;
+	border-top: 8px solid #3D73FB;
+	border-radius: 50%;
+	animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dropdown-bar {
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-bar .dropdown {
+  float: left;
+  width: 20%;
+}
+
+.btn {
+  border-radius: 0px;
+  width: 100%;
+  background-color: #3DA8FB;
+  border: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.dropdown-menu {
+  max-height: 350px;
+  overflow:auto;
+}
+
+.dropdown-menu div {
+  text-decoration: none;
+  color: #212529;
+  padding: 0px 10px 0px 10px;
+}
+
+.dropdown-menu li:hover {
+  background-color: #EEEEEE;
+  cursor: pointer;
+}
+
+#dashboard {
+  margin: 0px 15px 0px 15px;
+}
+
+#dashboard-title {
+  text-align: center;
+}
+
+#hist-info {
+  text-align: center;
+}
+
+#hbar-chart-container {
+  height: 575px;
+  padding: 10px 5px 10px 5px;
+}
+
+#hist-chart-container {
+  height: 250px;
+  width: 100%;
+  padding: 10px 5px 10px 5px;
+}

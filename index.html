@@ -10,225 +10,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-    <!-- Import latest version (v5) of d3.js -->
-    <script src='https://d3js.org/d3.v5.min.js'></script>
-
+    <!-- Import custom style -->
     <link rel="stylesheet" type="text/css" href="index.css">
-    <script type="text/javascript" src="load-data.js"></script>
-    <script type="text/javascript" src="filter.js"></script>
-    <script type="text/javascript" src="hbar-chart.js"></script>
-    <script type="text/javascript" src="hist-chart.js"></script>
-    <script type="text/javascript" src="donut-chart.js"></script>
-    <script type="text/javascript" src="util.js"></script>
   </head>
   <body>
-    <header></header>
-    <div id="circle">
-      <div class="loader">
-        <div class="loader">
-          <div class="loader">
-            <div class="loader"></div>
-          </div>
+    <header>
+      <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Dashboard</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+      <div class="container">
+        <div class="row" style="margin-top: 100px" />
+        <div class="row" style="margin-top: 100px">
+          <h1 style="margin-bottom: 50px">How will you dreamjob look like as a software developer?</h1>
+          <h4 style="margin-bottom: 20px">Where do you want to work? What do you want to do? How much do you want to work?</h4>
+          <h5 style="margin-bottom: 50px">By answering these questions we can find the lifestyle of software developers with <b>your dreamjob</b> using the
+            result of over <b>40.000</b> Stack Overflow users who filled in the Stack Overflow survey of 2018</h5>
+          <a href="dashboard.html"><button type="button" class="btn btn-primary btn-lg">Find out!</button></a>
         </div>
+        <div class="row" style="margin-top: 100px" />
       </div>
-    </div>
-    <div id="container">
-      <div id="dropdown-bar" class="dropdown-bar"></div>
-      <h3 id="dashboard-title"></h3>
-      <div id="dashboard">
-        <div class="row">
-          <div class="col-lg-4">
-            <div class="card">
-              <div id="hbar-chart-container" class="card-body"></div>
-            </div>
-          </div>
-          <div class="col-lg-8">
-            <div class="row">
-              <div class="card">
-                <div id="hist-chart-container" class="card-body"></div>
-                <h5 id="hist-info"></h5>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="card">
-                  <div id="day-chart-container" class="card-body"></div>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="card">
-                  <div id="satisfaction-chart-container" class="card-body"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </body>
-  <script>
-    const createSelectionMenu = (data, containerId, dropdowns) => {
-      const container = document.getElementById(containerId);
-      Object.keys(dropdowns).forEach((key) => {
-        // Create button with dropdown menu
-        container.innerHTML +=
-          '<div class="dropdown">' +
-            '<button id="' + key + '-dropdown" class="btn dropdown-toggle btn-primary" type="button" ' +
-              'data-toggle="dropdown">' + dropdowns[key] +
-            '<span class="caret"></span></button>' +
-            '<ul  id="' + key + '-dropdown-menu" class="dropdown-menu"></ul>' +
-          '</div>';
-        // Fill dropdown menu
-        const menu = document.getElementById(key + '-dropdown-menu');
-        menu.innerHTML += '<li onclick="onSelected(\'All\', \'' + dropdowns[key] + '\', \'' + key + '-dropdown\')"><div>All</div></li>';
-        uniques(data, dropdowns[key]).sort((a, b) => {
-          return a.localeCompare(b);
-        }).forEach((value) => {
-          menu.innerHTML += '<li onclick="onSelected(\'' + value + '\', \'' + dropdowns[key] + '\', \'' + key + '-dropdown\')"><div>' + value + '</div></li>';
-        });
-      });
-    };
-
-    const onSelected = (selectedValue, subject, dropdownId) => {
-      document.getElementById(dropdownId).innerText = selectedValue;
-      if (selectedValue == 'All') {
-        filter.remove(subject);
-      } else {
-        const obj = {};
-        obj[subject] = selectedValue;
-        filter.merge(obj);
-      }
-      filter.apply();
-    }
-
-    const updateDashboardTitle = (value) => {
-      const title = document.getElementById("dashboard-title");
-      title.innerText = 'Results of ' + value + ' software developers';
-    }
-
-    const updateAvgSalary = (value) => {
-      const info = document.getElementById("hist-info");
-      info.innerText = 'Average salary: $' + Math.round(value);
-    }
-
-    const toggleSpinner = (on_load_id='circle', load_done_id='container') => {
-       const spinner = document.getElementById(on_load_id);
-       const content = document.getElementById(load_done_id);
-       if (spinner.style.display == 'block' && content.style.display == 'none') {
-         spinner.style.display = 'none';
-         content.style.display = 'block';
-       } else {
-         spinner.style.display = 'block';
-         content.style.display = 'none';
-       }
-    }
-
-    const plotPopularLanguages = (data, container) => {
-      const elem = document.getElementById(container.substring(1));
-      elem.innerHTML += '<h5>Usage of programming languages</h5>';
-      let groupedData = sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => value / data.length));
-      const hbar = new Hbar({
-        width: 350,
-        height: 520,
-        margin: { top: 0, right: 60, bottom: 0, left: 80 },
-        padding: 0.1,
-        limit: 30,
-        fontSize: '1em',
-        labelAnchor: 1.2
-      });
-      hbar.plot(groupedData, container);
-      // On data update
-      filter.onFilterApplied(data => {
-        hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => value / data.length)));
-      });
-    }
-
-    toggleSpinner();
-    loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv').then(data => {
-      createSelectionMenu(data, 'dropdown-bar', {
-        jobtype: 'DevType',
-        companysize: 'CompanySize',
-        country: 'Country',
-        employment: 'Employment',
-        gender: 'Gender'
-      });
-      updateDashboardTitle(data.length);
-      filter = new Filter(data);
-      filter.apply();
-
-      plotPopularLanguages(data, '#hbar-chart-container');
-
-      // Plot histogram
-      const hist = new Hist(d3);
-      const histOptions = {
-        container: '#hist-chart-container',
-        width: 950,
-        height: 225,
-        margin: { top: 20, right: 30, bottom: 20, left: 40 },
-        padding: 0.1,
-        bins: 20,
-        max: 200000,
-        min: 0
-      }
-
-      let histData = values(data, 'ConvertedSalary');
-      updateAvgSalary(avg(histData));
-      hist.plot(histData, histOptions);
-
-      // Plot satisfaction
-      const hbar2Options = {
-        width: 250,
-        height: 225,
-        margin: { top: 0, right: 60, bottom: 0, left: 175 },
-        padding: 0.1,
-        limit: 30,
-        colors: ['#3D33FB', '#443BFB', '#4C43FB', '#544BFB', '#5C53FB',
-          '#635BFB', '#6B63FB', '#736CFC', '#7B74FC', '#827CFC',
-          '#8A84FC', '#928CFC', '#9A94FC', '#A19CFC', '#A9A5FD',
-          '#B1ADFD', '#B9B5FD', '#C0BDFD', '#C8C5FD', '#D0CDFD']
-      }
-      const hbar2 = new Hbar(hbar2Options);
-      const hbar2Data = sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => {
-        return value / data.length;
-      }));
-      hbar2.plot(hbar2Data, '#satisfaction-chart-container');
-
-      // Plot donut chart
-      const donut = new Donut();
-      const avgComputerHours = avg(values(data, 'HoursComputer'));
-      const avgOutsideHours = avg(values(data, 'HoursOutside'));
-      const donutData = [{ key: 'computer time', value: avgComputerHours / 24, color: '#3D33FB'},
-                         { key: 'outside time', value: avgOutsideHours / 24, color: '#635BFB' },
-                         { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
-     const donutOptions = {
-       container: '#day-chart-container',
-       width: 250,
-       height: 250,
-       margin: { top: 0, right: 0, bottom: 0, left: 0 },
-       padding: 0.1,
-       radius: 100
-     }
-     donut.plot(donutData, donutOptions);
-
-      filter.onFilterApplied(data => {
-        updateDashboardTitle(data.length);
-        // hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => {
-        //   return value / data.length;
-        // }), true));
-        // const histValues = values(data, 'ConvertedSalary');
-        // updateAvgSalary(avg(histValues));
-        // hist.updateData(histValues);
-        // hbar2.updateData(sortGroups(groupBy(data, 'JobSatisfaction', (value) => {
-        //   return value / data.length;
-        // }), true))
-        // const avgComputerHours = avg(values(data, 'HoursComputer'));
-        // const avgOutsideHours = avg(values(data, 'HoursOutside'));
-        // const donutData = [{ key: 'computer time', value: avgComputerHours / 24, color: '#3D33FB'},
-        //                    { key: 'outside time', value: avgOutsideHours / 24, color: '#635BFB' },
-        //                    { key: 'other', value: (24 - avgComputerHours - avgOutsideHours) / 24, color: '#B1ADFD' }];
-        // donut.plot(donutData, donutOptions);
-      });
-      toggleSpinner();
-    });
-  </script>
 </html>
