@@ -45,8 +45,18 @@ body {
 
 #page-content-wrapper {
   width: 100%;
-  position: absolute;
   padding: 15px;
+  height: 500px;
+  overflow-y: auto;
+}
+
+#wrapper {
+  padding-left: 250px;
+}
+
+#wrapper #page-content-wrapper {
+  position: relative;
+  margin-right: 0;
 }
 
 .sidebar-nav {
@@ -140,6 +150,11 @@ body {
 .dropdown-menu li:hover {
   background-color: #EEEEEE;
   cursor: pointer;
+}
+
+.card-header {
+  background-color: #00AEFF;
+  color: #FFFFFF;
 }
 
 #dashboard {
