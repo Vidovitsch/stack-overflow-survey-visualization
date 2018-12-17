@@ -86,11 +86,14 @@ const Hist = function(options) {
         .attr("y", (d) => this.yScale(d.length) - 3);
     // Show x-ax
     this.svg.append("g")
+        .attr("class", "x-axis")
         .attr("transform", "translate(0," + this.height + ")")
         .call(d3.axisBottom(this.xScale));
   };
 
   Hist.prototype.updateData = function(newData) {
+    this.data = newData;
+
     const bins = this.histogram(newData);
     this.colorScale.domain([0, d3.max(bins, (d) => {
       return d.length;
@@ -121,4 +124,13 @@ const Hist = function(options) {
       .duration(1500)
         .attr("y", (d) => this.yScale(d.length) - 3);
   };
+
+  Hist.prototype.rescale = function(min, max) {
+    this.min = min;
+    this.max = max;
+    this.xScale.domain([this.min, this.max - 0.01])
+    // Show x-ax
+    this.svg.selectAll(".x-axis")
+        .call(d3.axisBottom(this.xScale));
+  }
 }

@@ -173,3 +173,17 @@ body {
 .col-lg-12 {
   padding-bottom: 15px;
 }
+
+div.ui-slider-range.ui-widget-header {
+    background: #00AEFF;
+}
+
+#rangeslider {
+  width: 50%;
+  float: right;
+  margin: 0px 15px 0px 15px;
+}
+
+#rangedval {
+  float: right;
+}

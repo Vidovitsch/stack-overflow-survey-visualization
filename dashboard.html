@@ -6,9 +6,14 @@
 
     <!-- Import Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <link rel="icon" href="http://designm.ag/favicon.ico">
+    <link rel="stylesheet" type="text/css" media="all" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" media="all" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!-- Import latest version (v5) of d3.js -->
     <script src='https://d3js.org/d3.v5.min.js'></script>
@@ -93,8 +98,9 @@
             <div class="row" style="height: 50%">
               <div class="col-lg-12">
                 <div class="card text-center" style="height: 100%">
-                  <div class="card-header">Salary</div>
-                  <div class="card-body" id="salary-container"></div>
+                  <div class="card-header">Salary distribution between <span id="rangeval"></span> per year</div>
+                  <div class="card-body" id="salary-container">
+                  </div>
                 </div>
               </div>
             </div>
@@ -140,16 +146,6 @@
       filter.apply();
     };
 
-    const updateDashboardTitle = (value) => {
-      const title = document.getElementById("dashboard-title");
-      title.innerText = 'Results of ' + value + ' software developers';
-    };
-
-    const updateAvgSalary = (value) => {
-      const info = document.getElementById("hist-info");
-      info.innerText = 'Average salary: $' + Math.round(value);
-    };
-
     const toggleSpinner = (on_load_id='loader-circle', load_done_id='wrapper') => {
        const spinner = document.getElementById(on_load_id);
        const content = document.getElementById(load_done_id);
@@ -160,6 +156,21 @@
          spinner.style.display = 'block';
          content.style.display = 'none';
        }
+    };
+
+    const setRangeSlider = (min, max, container, cb_) => {
+      document.getElementById(container).innerHTML += '<div id="rangeslider"></div>';
+      // Setup slider
+      $('#rangeslider').slider({
+        range: true,
+        min,
+        max,
+        values: [min, max],
+        slide: function(event, ui) {
+          $('#rangeval').html(ui.values[0] + '$ and ' + ui.values[1] + '$');
+          cb_(ui.values[0], ui.values[1]);
+        }
+      });
     };
 
     const plotProgrammingLanguages = (data, container) => {
@@ -199,20 +210,28 @@
 
     const plotSalary = (data, container) => {
       let histData = values(data, 'ConvertedSalary');
+      let min = Math.min(...histData);
+      let max = Math.max(...histData);
+      $('#rangeval').html(min + '$ and ' + max + '$');
       const hist = new Hist({
         container: container,
         width: 825,
-        height: 200,
-        margin: { top: 20, right: 30, bottom: 20, left: 40 },
+        height: 225,
+        margin: { top: 20, right: 30, bottom: 20, left: 30 },
         bins: 20,
-        max: 200000,
-        min: 0,
+        max,
+        min,
         fontSize: '0.9em'
       });
+      // Setup slider
+      setRangeSlider(min, max, container.substr(1), (min, max) => {
+        hist.rescale(min, max);
+      })
       hist.plot(histData, container);
       // On data update
       filter.onFilterApplied(data => {
-        hist.updateData(values(data, 'ConvertedSalary'));
+        histData = values(data, 'ConvertedSalary');
+        hist.updateData(histData);
       });
     };
 
