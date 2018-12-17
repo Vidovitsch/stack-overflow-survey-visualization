@@ -16,7 +16,7 @@ const Hist = function(options) {
                               "#827CFC", "#7B74FC", "#736CFC", "#6B63FB", "#635BFB",
                               "#5C53FB", "#544BFB", "#4C43FB", "#443BFB", "#3D33FB"]);
   this.xScale = d3.scaleLinear()
-    .domain([this.min, this.max])
+    .domain([this.min, this.max - 0.01])
     .rangeRound([0, this.width])
   this.yScale = d3.scaleLinear()
     .range([this.height, 0]);
@@ -26,7 +26,6 @@ const Hist = function(options) {
       .thresholds(this.xScale.ticks(this.bins));
 
   Hist.prototype.plot = function(data, container) {
-    console.log(data);
     this.data = data;
 
     // Group the data for the bars
