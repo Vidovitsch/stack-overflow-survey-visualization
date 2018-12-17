@@ -77,12 +77,13 @@ const Hist = function(options) {
         .attr('x', (d) => {
           return (this.xScale(d.x0) + this.xScale(d.x1)) / 2;
         })
-        .attr("y", this.height - 3);
+        .attr("y", this.height - 3)
+        .attr('font-size', this.fontSize);
     // Add animation to text
     this.svg.selectAll('text')
       .transition()
       .duration(1500)
-        .attr("y", (d) => this.yScale(d.length));
+        .attr("y", (d) => this.yScale(d.length) - 3);
     // Show x-ax
     this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
@@ -91,11 +92,6 @@ const Hist = function(options) {
 
   Hist.prototype.updateData = function(newData) {
     const bins = this.histogram(newData);
-    // Get percentage for each bin
-    const percentages = bins.reduce((percentages, bin) => {
-      percentages.push(Math.round(bin.length / newData.length * 1000) / 10);
-      return percentages;
-    }, []);
     this.colorScale.domain([0, d3.max(bins, (d) => {
       return d.length;
     })]);
