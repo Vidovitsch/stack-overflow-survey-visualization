@@ -1,4 +1,5 @@
 const Hist = function(d3) {
+  
   this.d3 = d3;
   this.width = 0;
   this.height = 0;
