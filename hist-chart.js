@@ -30,13 +30,10 @@ const Hist = function(options) {
 
     // Group the data for the bars
     const bins = this.histogram(this.data);
-    // Get percentage for each bin
-    const percentages = bins.reduce((percentages, bin) => {
-      percentages.push(Math.round(bin.length / this.data.length * 1000) / 10);
-      return percentages;
-    }, []);
     // Scale the range of the data in the y domain
-    this.yScale.domain([0, d3.max(percentages)]);
+    this.yScale.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
     // Create SVG
     this.svg = d3.select(container)
       .append("svg")
@@ -57,12 +54,12 @@ const Hist = function(options) {
     this.svg.selectAll('rect')
       .transition()
       .duration(1500)
-        .attr("y", (d, i) => this.yScale(percentages[i]))
-        .attr("height", (d, i) => {
-          return this.yScale(0) - this.yScale(percentages[i]);
+        .attr("y", (d) => this.yScale(d.length))
+        .attr("height", (d) => {
+          return this.yScale(0) - this.yScale(d.length);
         })
-        .attr('fill', (d, i) => {
-          return this.colorScale(percentages[i]);
+        .attr('fill', (d) => {
+          return this.colorScale(d.length);
         });
     // Add text to bars
     this.svg.selectAll('text')
@@ -71,10 +68,9 @@ const Hist = function(options) {
       .append('text')
         .attr("class", "label")
         .attr("text-anchor", "middle")
-        .text((d, i) => {
-          const value = percentages[i];
-          if (value == 0) return '';
-          return value;
+        .text((d) => {
+          if (d.length == 0) return '';
+          return d.length;
         })
         .attr('x', (d) => {
           return (this.xScale(d.x0) + this.xScale(d.x1)) / 2;
@@ -84,7 +80,7 @@ const Hist = function(options) {
     this.svg.selectAll('text')
       .transition()
       .duration(1500)
-        .attr("y", (d, i) => this.yScale(percentages[i]) - 3);
+        .attr("y", (d) => this.yScale(d.length));
     // Show x-ax
     this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
@@ -92,38 +88,36 @@ const Hist = function(options) {
   };
 
   Hist.prototype.updateData = function(newData) {
-    console.log(newData);
     const bins = this.histogram(newData);
-    console.log(bins);
     // Get percentage for each bin
     const percentages = bins.reduce((percentages, bin) => {
       percentages.push(Math.round(bin.length / newData.length * 1000) / 10);
       return percentages;
     }, []);
-    console.log(percentages);
     // Scale the range of the data in the y domain
-    this.yScale.domain([0, d3.max(percentages)]);
+    this.yScale.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
     this.svg.selectAll('rect')
       .data(bins)
       .transition()
       .duration(1500)
-      .attr("y", (d, i) => this.yScale(percentages[i]))
-      .attr("height", (d, i) => this.yScale(0) - this.yScale(percentages[i]))
-      .attr('fill', (d, i) => {
+      .attr("y", (d) => this.yScale(d.length))
+      .attr("height", (d) => this.yScale(0) - this.yScale(d.length))
+      .attr('fill', (d) => {
         if (d.length == 0) return '#FFFFFF';
-        return this.colorScale(percentages[i]);
+        return this.colorScale(d.length);
       });
     // Update position and value of text after bars
     this.svg.selectAll('text')
       .data(bins)
       .attr("class", "label")
-      .text((d, i) => {
-        const value = percentages[i];
-        if (value == 0) return '';
-        return value;
+      .text((d) => {
+        if (d.length == 0) return '';
+        return d.length;
       })
       .transition()
       .duration(1500)
-        .attr("y", (d, i) => this.yScale(percentages[i]) - 3);
+        .attr("y", (d) => this.yScale(d.length));
   };
 }
