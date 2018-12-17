@@ -119,6 +119,6 @@ const Hist = function(options) {
       })
       .transition()
       .duration(1500)
-        .attr("y", (d) => this.yScale(d.length));
+        .attr("y", (d) => this.yScale(d.length) - 3);
   };
 }
