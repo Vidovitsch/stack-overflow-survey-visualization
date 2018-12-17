@@ -187,3 +187,10 @@ div.ui-slider-range.ui-widget-header {
 #rangedval {
   float: right;
 }
+
+#total-users {
+  font-size: 0.9em;
+  width: 100%;
+  text-align: right;
+  color: #FFFFFF;
+}
