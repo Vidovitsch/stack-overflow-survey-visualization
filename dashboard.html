@@ -158,7 +158,7 @@
        }
     };
 
-    const setRangeSlider = (min, max, container, cb_) => {
+    const setRangeSlider = (min, max, bins, container, cb_) => {
       document.getElementById(container).innerHTML += '<div id="rangeslider"></div>';
       // Setup slider
       $('#rangeslider').slider({
@@ -166,6 +166,7 @@
         min,
         max,
         values: [min, max],
+        step: bins,
         slide: function(event, ui) {
           $('#rangeval').html(ui.values[0] + '$ and ' + ui.values[1] + '$');
           cb_(ui.values[0], ui.values[1]);
@@ -223,8 +224,9 @@
         min,
         fontSize: '0.9em'
       });
+
       // Setup slider
-      setRangeSlider(min, max, container.substr(1), (min, max) => {
+      setRangeSlider(min, max, 20, container.substr(1), (min, max) => {
         hist.rescale(min, max);
       })
       hist.plot(histData, container);

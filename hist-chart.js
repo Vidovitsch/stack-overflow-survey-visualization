@@ -129,8 +129,46 @@ const Hist = function(options) {
     this.min = min;
     this.max = max;
     this.xScale.domain([this.min, this.max - 0.01])
+
+    const thresholds = []
+    for (let i = 0; i <= this.bins; i++) {
+      thresholds.push(this.min + (i * ((this.max - this.min) / this.bins)))
+    }
+
+    this.histogram.domain(this.xScale.domain())
+        .thresholds(thresholds);
+    const bins = this.histogram(this.data);
+    console.log(bins);
+    this.colorScale.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
+    // Scale the range of the data in the y domain
+    this.yScale.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
+    this.svg.selectAll('rect')
+      .data(bins)
+      .transition()
+      .duration(1500)
+      .attr("y", (d) => this.yScale(d.length))
+      .attr("height", (d) => this.yScale(0) - this.yScale(d.length))
+      .attr('fill', (d) => {
+        if (d.length == 0) return '#FFFFFF';
+        return this.colorScale(d.length);
+      });
+    this.svg.selectAll('text')
+      .data(bins)
+      .attr("class", "label")
+      .text((d) => {
+        if (d.length == 0) return '';
+        return d.length;
+      })
+      .transition()
+      .duration(1500)
+        .attr("y", (d) => this.yScale(d.length) - 3);
     // Show x-ax
-    this.svg.selectAll(".x-axis")
+    this.svg.select(".x-axis")
+        .attr("transform", "translate(0," + this.height + ")")
         .call(d3.axisBottom(this.xScale));
   }
 }
