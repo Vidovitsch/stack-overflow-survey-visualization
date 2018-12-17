@@ -32,7 +32,7 @@ const defaultMapper = rows => {
       Exercise: exercise_to_number(row.Exercise),
       HoursComputer: computer_to_number(row.HoursComputer),
       HoursOutside: outside_to_number(row.HoursOutside),
-      JobSatisfaction: row.JobSatisfaction,
+      JobSatisfaction: translate_job_satisfaction(row.JobSatisfaction),
       Employment: row.Employment,
       CompanySize: row.CompanySize,
       Country: row.Country,
@@ -72,12 +72,20 @@ const exercise_to_number = (value) => {
   }
 }
 
+const translate_job_satisfaction = (value) => {
+  if (value == 'Neither satisfied nor dissatisfied') {
+     return 'Neutral';
+  } else {
+    return value;
+  }
+}
+
 const sortJobSatisfaction = (data) => {
   const mappings = {
     'Extremely satisfied': 0,
     'Moderately satisfied': 1,
     'Slightly satisfied': 2,
-    'Neither satisfied nor dissatisfied': 3,
+    'Neutral': 3,
     'Slightly dissatisfied': 4,
     'Moderately dissatisfied': 5,
     'Extremely dissatisfied': 6

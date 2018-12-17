@@ -183,9 +183,9 @@
     const plotJobSatisfaction = (data, container) => {
       let groupedData = sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => value / data.length));
       const hbar = new Hbar({
-        width: 250,
+        width: 225,
         height: 225,
-        margin: { top: 0, right: 60, bottom: 0, left: 175 },
+        margin: { top: 0, right: 60, bottom: 0, left: 120 },
         padding: 0.1,
         fontSize: '1em',
         labelAnchor: 1.2
@@ -230,7 +230,7 @@
       filter = new Filter(data);
       filter.apply();
       plotPopularLanguages(data, '#popular-languages-container');
-      // plotJobSatisfaction(data, '#job-satisfaction-container')
+      plotJobSatisfaction(data, '#job-satisfaction-container')
 
       /**
       updateDashboardTitle(data.length);
