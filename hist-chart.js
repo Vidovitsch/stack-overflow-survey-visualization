@@ -10,7 +10,6 @@ const Hist = function(options) {
   this.data = {};
   this.svg = {};
   this.colorScale = d3.scaleQuantize()
-    .domain([0, 1])
     .range(options.colors || ["#D0CDFD", "#C8C5FD", "#C0BDFD", "#B9B5FD", "#B1ADFD",
                               "#A9A5FD", "#A19CFC", "#9A94FC", "#928CFC", "#8A84FC",
                               "#827CFC", "#7B74FC", "#736CFC", "#6B63FB", "#635BFB",
@@ -30,6 +29,9 @@ const Hist = function(options) {
 
     // Group the data for the bars
     const bins = this.histogram(this.data);
+    this.colorScale.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
     // Scale the range of the data in the y domain
     this.yScale.domain([0, d3.max(bins, (d) => {
       return d.length;
@@ -94,6 +96,9 @@ const Hist = function(options) {
       percentages.push(Math.round(bin.length / newData.length * 1000) / 10);
       return percentages;
     }, []);
+    this.colorScale.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
     // Scale the range of the data in the y domain
     this.yScale.domain([0, d3.max(bins, (d) => {
       return d.length;
