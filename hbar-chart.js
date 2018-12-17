@@ -87,7 +87,7 @@ const Hbar = function(options) {
       .call(d3.axisLeft(this.yScale));
   };
 
-  H.updateData = function(newData) {
+  H.updateData = function(newData) {    
     // Optimization:
     // Convert list presentation of the data to dictionary for faster lookup
     newData = newData.reduce((dict, kvPair) => {

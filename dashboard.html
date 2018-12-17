@@ -198,22 +198,20 @@
     };
 
     const plotSalary = (data, container) => {
-      const hist = new Hist(d3);
-      const histOptions = {
+      let histData = values(data, 'ConvertedSalary');
+      const hist = new Hist({
         container: container,
         width: 825,
         height: 200,
         margin: { top: 20, right: 30, bottom: 20, left: 40 },
-        padding: 0.1,
         bins: 20,
         max: 200000,
         min: 0
-      }
-      let histData = values(data, 'ConvertedSalary');
-      hist.plot(histData, histOptions);
+      });
+      hist.plot(histData, container);
       // On data update
       filter.onFilterApplied(data => {
-        hist.updateData(values(data, 'ConvertedSalary', (value) => value / data.length));
+        hist.updateData(values(data, 'ConvertedSalary'));
       });
     };
 
@@ -250,25 +248,6 @@
       plotSalary(data, '#salary-container');
       /**
       updateDashboardTitle(data.length);
-
-      // Plot histogram
-      const hist = new Hist(d3);
-      const histOptions = {
-        container: '#hist-chart-container',
-        width: 950,
-        height: 225,
-        margin: { top: 20, right: 30, bottom: 20, left: 40 },
-        padding: 0.1,
-        bins: 20,
-        max: 200000,
-        min: 0
-      }
-
-      let histData = values(data, 'ConvertedSalary');
-      updateAvgSalary(avg(histData));
-      hist.plot(histData, histOptions);
-
-
 
       // Plot donut chart
       const donut = new Donut();
