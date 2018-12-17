@@ -98,7 +98,7 @@
             <div class="row" style="height: 50%">
               <div class="col-lg-12">
                 <div class="card text-center" style="height: 100%">
-                  <div class="card-header">Salary distribution between <span id="rangeval"></span> per year</div>
+                  <div class="card-header">Salary distribution between <span id="rangeval"></span> per year (avg. <span id="avg-salary"></span>)</div>
                   <div class="card-body" id="salary-container">
                   </div>
                 </div>
@@ -168,7 +168,7 @@
         values: [min, max],
         step: bins,
         slide: function(event, ui) {
-          $('#rangeval').html(ui.values[0] + '$ and ' + ui.values[1] + '$');
+          $('#rangeval').html('$' + ui.values[0] + ' and $' + ui.values[1]);
           cb_(ui.values[0], ui.values[1]);
         }
       });
@@ -213,7 +213,13 @@
       let histData = values(data, 'ConvertedSalary');
       let min = Math.min(...histData);
       let max = Math.max(...histData);
-      $('#rangeval').html(min + '$ and ' + max + '$');
+
+      let average = avg(histData.reduce((acc, value) => {
+        if (value >= min && value <= max) acc.push(value)
+        return acc;
+      }, []))
+      $('#rangeval').html('$' + min + ' and $' + max);
+      $('#avg-salary').html('$' + Math.round(average));
       const hist = new Hist({
         container: container,
         width: 825,
@@ -228,12 +234,23 @@
       // Setup slider
       setRangeSlider(min, max, 20, container.substr(1), (min, max) => {
         hist.rescale(min, max);
+        let average = avg(histData.reduce((acc, value) => {
+          if (value >= min && value <= max) acc.push(value)
+          return acc;
+        }, []))
+        $('#avg-salary').html('$' + Math.round(average));
       })
       hist.plot(histData, container);
+      //setAvgSalary(data, min, max, container.substr(1))
       // On data update
       filter.onFilterApplied(data => {
         histData = values(data, 'ConvertedSalary');
         hist.updateData(histData);
+        let average = avg(histData.reduce((acc, value) => {
+          if (value >= min && value <= max) acc.push(value)
+          return acc;
+        }, []))
+        $('#avg-salary').html('$' + Math.round(average));
       });
     };
 
