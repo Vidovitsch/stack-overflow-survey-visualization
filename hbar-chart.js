@@ -25,7 +25,6 @@ const Hbar = function(options) {
   const H = Hbar.prototype;
 
   H.plot = function(data, container='body') {
-    console.log(data)
     // Set limit on the amount of bars in the chart
     // Bars will be trimmed from the bottom up
     this.data = this.limit ? data.slice(Math.abs(this.limit - data.length)) : data;

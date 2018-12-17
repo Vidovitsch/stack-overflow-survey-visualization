@@ -81,17 +81,16 @@
           </li>
          </ul>
        </div>
-       <!-- Page Content -->
        <div id="page-content-wrapper">
-         <div class="row">
+         <div class="row" style="height: 100%">
            <div class="col-lg-4">
-             <div class="card text-center">
+             <div class="card text-center" style="height: 100%">
                <div class="card-header">Popular programming languages</div>
-               <div class="card-body"></div>
+               <div class="card-body" id="popular-languages-container"></div>
              </div>
           </div>
           <div class="col-lg-8">
-            <div class="row">
+            <div class="row" style="height: 50%">
               <div class="col-lg-12">
                 <div class="card text-center" style="height: 100%">
                   <div class="card-header">Salary</div>
@@ -99,17 +98,17 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row" style="height: 50%">
               <div class="col-lg-6">
-                <div class="card text-center">
+                <div class="card text-center" style="height: 100%">
                   <div class="card-header">Day distribution</div>
                   <div class="card-body"></div>
                 </div>
               </div>
               <div class="col-lg-6">
-                <div class="card text-center">
+                <div class="card text-center" style="height: 100%">
                   <div class="card-header">Job satisfaction</div>
-                  <div class="card-body"></div>
+                  <div class="card-body" id="job-satisfaction-container"></div>
                 </div>
               </div>
             </div>
@@ -117,40 +116,6 @@
         </div>
       </div>
     </div>
-      <!--
-      <div id="dropdown-bar" class="dropdown-bar"></div>
-      <h3 id="dashboard-title"></h3>
-      <div id="dashboard">
-        <div class="row">
-          <div class="col-lg-4">
-            <div class="card">
-              <div id="hbar-chart-container" class="card-body"></div>
-            </div>
-          </div>
-          <div class="col-lg-8">
-            <div class="row">
-              <div class="card">
-                <div id="hist-chart-container" class="card-body"></div>
-                <h5 id="hist-info"></h5>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="card">
-                  <div id="day-chart-container" class="card-body"></div>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="card">
-                  <div id="satisfaction-chart-container" class="card-body"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>  -->
   </body>
   <script>
     const fillSelectionMenus = (menuMappings) => {
@@ -173,17 +138,17 @@
         filter.merge(obj);
       }
       filter.apply();
-    }
+    };
 
     const updateDashboardTitle = (value) => {
       const title = document.getElementById("dashboard-title");
       title.innerText = 'Results of ' + value + ' software developers';
-    }
+    };
 
     const updateAvgSalary = (value) => {
       const info = document.getElementById("hist-info");
       info.innerText = 'Average salary: $' + Math.round(value);
-    }
+    };
 
     const toggleSpinner = (on_load_id='loader-circle', load_done_id='wrapper') => {
        const spinner = document.getElementById(on_load_id);
@@ -195,11 +160,9 @@
          spinner.style.display = 'block';
          content.style.display = 'none';
        }
-    }
+    };
 
     const plotPopularLanguages = (data, container) => {
-      const elem = document.getElementById(container.substring(1));
-      elem.innerHTML += '<h5>Usage of programming languages</h5>';
       let groupedData = sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => value / data.length));
       const hbar = new Hbar({
         width: 350,
@@ -215,11 +178,9 @@
       filter.onFilterApplied(data => {
         hbar.updateData(sortGroups(groupBy(data, 'LanguageWorkedWith', (value) => value / data.length)));
       });
-    }
+    };
 
     const plotJobSatisfaction = (data, container) => {
-      const elem = document.getElementById(container.substring(1));
-      elem.innerHTML += '<h5>Job Satisfaction of developers</h5>';
       let groupedData = sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => value / data.length));
       const hbar = new Hbar({
         width: 250,
@@ -234,7 +195,11 @@
       filter.onFilterApplied(data => {
         hbar.updateData(sortJobSatisfaction(groupBy(data, 'JobSatisfaction', (value) => value / data.length)));
       });
-    }
+    };
+
+    const plotSalary = (data, container) => {
+
+    };
 
     toggleSpinner();
     loadData('./dataset/2018 Stack Overflow Survey Results_prepped.csv').then(data => {
@@ -262,20 +227,13 @@
           column: 'Gender'
         },
       })
-      /**
-      createSelectionMenu(data, 'dropdown-bar', {
-        jobtype: 'DevType',
-        companysize: 'CompanySize',
-        country: 'Country',
-        employment: 'Employment',
-        gender: 'Gender'
-      });
-      updateDashboardTitle(data.length);
       filter = new Filter(data);
       filter.apply();
+      // plotPopularLanguages(data, '#popular-languages-container');
+      // plotJobSatisfaction(data, '#job-satisfaction-container')
 
-      plotPopularLanguages(data, '#hbar-chart-container');
-      plotJobSatisfaction(data, '#satisfaction-chart-container')
+      /**
+      updateDashboardTitle(data.length);
 
       // Plot histogram
       const hist = new Hist(d3);

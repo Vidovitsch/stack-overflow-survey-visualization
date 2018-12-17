@@ -2,13 +2,14 @@ body {
   overflow-x: hidden;
 }
 
+
 #loader-circle {
   width: 150px;
   height: 150px;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   display: none;
 }
 
@@ -44,10 +45,11 @@ body {
 }
 
 #page-content-wrapper {
-  width: 100%;
-  padding: 15px;
-  height: 500px;
-  overflow-y: auto;
+  width: calc(100% - 250px);
+  height: calc(100% - 56px);
+  padding-left: 15px;
+  padding-right: 15px;
+  position: absolute;
 }
 
 #wrapper {
@@ -55,7 +57,7 @@ body {
 }
 
 #wrapper #page-content-wrapper {
-  position: relative;
+  position: absolute;
   margin-right: 0;
 }
 
@@ -157,25 +159,14 @@ body {
   color: #FFFFFF;
 }
 
-#dashboard {
-  margin: 0px 15px 0px 15px;
+.col-lg-4, .col-lg-8 {
+  padding: 15px;
 }
 
-#dashboard-title {
-  text-align: center;
+.col-lg-6 {
+  padding-top: 15px;
 }
 
-#hist-info {
-  text-align: center;
-}
-
-#hbar-chart-container {
-  height: 575px;
-  padding: 10px 5px 10px 5px;
-}
-
-#hist-chart-container {
-  height: 250px;
-  width: 100%;
-  padding: 10px 5px 10px 5px;
+.col-lg-12 {
+  padding-bottom: 15px;
 }
