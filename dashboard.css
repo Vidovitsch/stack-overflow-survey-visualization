@@ -159,6 +159,10 @@ body {
   color: #FFFFFF;
 }
 
+.card-body {
+  padding: 15px 0px 15px 0px;
+}
+
 .col-lg-4, .col-lg-8 {
   padding: 15px;
 }
