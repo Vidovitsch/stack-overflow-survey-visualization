@@ -138,7 +138,6 @@ const Hist = function(options) {
     this.histogram.domain(this.xScale.domain())
         .thresholds(thresholds);
     const bins = this.histogram(this.data);
-    console.log(bins);
     this.colorScale.domain([0, d3.max(bins, (d) => {
       return d.length;
     })]);

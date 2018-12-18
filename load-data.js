@@ -109,7 +109,7 @@ const computer_to_number = (value) => {
     case '9 - 12 hours':
       return 10.5;
     default:
-      return 14;
+      return 13;
   }
 }
 
