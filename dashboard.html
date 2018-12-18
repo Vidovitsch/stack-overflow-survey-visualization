@@ -108,7 +108,7 @@
             <div class="row" style="height: 50%">
               <div class="col-lg-6">
                 <div class="card text-center" style="height: 100%">
-                  <div class="card-header">Day distribution</div>
+                  <div class="card-header">Time distribution of daily activities</div>
                   <div class="card-body" id="day-distribution-container"></div>
                 </div>
               </div>
@@ -261,16 +261,32 @@
     };
 
     const plotDayDistribution = (data, container) => {
+      let donut = donutChart()
+          .width(400)
+          .height(225)
+          .transTime(1500)
+          .padAngle(0.015)
+          .variable('value')
+          .category('label');
       const avgPcTime = avg(values(data, 'HoursComputer'));
       const avgOutsideTime = avg(values(data, 'HoursOutside'));
       const avgOtherTime = 24 - avgPcTime - avgOutsideTime;
-      const donutData = [
-        { label: 'avgPcTime', value: avgPcTime },
-        { label: 'avgOutsideTime', value: avgOutsideTime },
-        { label: 'avgOtherTime', value: avgOtherTime }
-      ];
-      const donut = new Donut();
-      donut.plot(donutData, container);
+      d3.select(container).call(donut);
+      donut.data([
+        { label: 'PC', value: avgPcTime },
+        { label: 'Outside', value: avgOutsideTime },
+        { label: 'Other', value: avgOtherTime }
+      ]);
+      filter.onFilterApplied(data => {
+        const avgPcTime = avg(values(data, 'HoursComputer'));
+        const avgOutsideTime = avg(values(data, 'HoursOutside'));
+        const avgOtherTime = 24 - avgPcTime - avgOutsideTime;
+        donut.data([
+          { label: 'PC', value: avgPcTime },
+          { label: 'Outside', value: avgOutsideTime },
+          { label: 'Other', value: avgOtherTime }
+        ]);
+      });
     };
 
     toggleSpinner();
@@ -304,39 +320,8 @@
       plotProgrammingLanguages(data, '#programming-languages-container');
       plotJobSatisfaction(data, '#job-satisfaction-container')
       plotSalary(data, '#salary-container');
-      //plotDayDistribution(data, '#day-distribution-container')
+      plotDayDistribution(data, '#day-distribution-container')
       setTotalUsers(data.length, 'total-users');
-
-      var donut = donutChart()
-          .width(400)
-          .height(225)
-          .transTime(1500) // length of transitions in ms
-          .cornerRadius(0) // sets how rounded the corners are on each slice
-          .padAngle(0.015) // effectively dictates the gap between slices
-          .variable('value')
-          .category('label');
-      const avgPcTime = avg(values(data, 'HoursComputer'));
-      const avgOutsideTime = avg(values(data, 'HoursOutside'));
-      const avgOtherTime = 24 - avgPcTime - avgOutsideTime;
-      const donutData = [
-        { label: 'PC', value: avgPcTime },
-        { label: 'Outside', value: avgOutsideTime },
-        { label: 'Other', value: avgOtherTime }
-      ];
-      d3.select('#day-distribution-container')
-          .call(donut); // draw chart in div
-      donut.data(donutData);
-      filter.onFilterApplied(data => {
-        const avgPcTime = avg(values(data, 'HoursComputer'));
-        const avgOutsideTime = avg(values(data, 'HoursOutside'));
-        const avgOtherTime = 24 - avgPcTime - avgOutsideTime;
-        const donutData = [
-          { label: 'PC', value: avgPcTime },
-          { label: 'Outside', value: avgOutsideTime },
-          { label: 'Other', value: avgOtherTime }
-        ];
-        donut.data(donutData);
-      });
     });
   </script>
 </html>
