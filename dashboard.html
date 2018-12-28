@@ -178,7 +178,7 @@
     const setTotalUsers = (value, container) => {
       document.getElementById(container).innerText = 'Statistics are based on the results of ' + value + ' users who filled in the Stack Overflow survey of 2018';
       filter.onFilterApplied(data => {
-        document.getElementById(container).innerText = 'Statistics are based on the results of' + data.length + ' users who filled in the Stack Overflow survey of 2018';
+        document.getElementById(container).innerText = 'Statistics are based on the results of ' + data.length + ' users who filled in the Stack Overflow survey of 2018';
       });
     }
 
@@ -238,8 +238,10 @@
         fontSize: '0.9em'
       });
       // Setup slider
-      setRangeSlider(min, max, 20, container.substr(1), (min, max) => {
-        hist.rescale(min, max);
+      setRangeSlider(min, max, 20, container.substr(1), (newMin, newMax) => {
+        hist.rescale(newMin, newMax);
+        min = newMin;
+        max = newMax;
         let average = avg(histData.reduce((acc, value) => {
           if (value >= min && value <= max) acc.push(value)
           return acc;
