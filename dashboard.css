@@ -2,6 +2,18 @@ body {
   overflow-x: hidden;
 }
 
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+.fill {
+  width: 100%;
+  height: 56px;
+}
+
 #loader-circle {
   width: 150px;
   height: 150px;
