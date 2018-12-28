@@ -176,9 +176,9 @@
     };
 
     const setTotalUsers = (value, container) => {
-      document.getElementById(container).innerText = 'Statistics are based on the results of ' + value + ' users';
+      document.getElementById(container).innerText = 'Statistics are based on the results of ' + value + ' users who filled in the Stack Overflow survey of 2018';
       filter.onFilterApplied(data => {
-        document.getElementById(container).innerText = 'Statistics are based on the results of ' + data.length + ' users';
+        document.getElementById(container).innerText = 'Statistics are based on the results of' + data.length + ' users who filled in the Stack Overflow survey of 2018';
       });
     }
 
